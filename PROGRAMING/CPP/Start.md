@@ -130,6 +130,15 @@ int a = 10;
 
 5.2e2 = 5.2 * 10^2 = 520
 
+#### new
+
+动态分配内存，返回指针
+
+```cpp
+int *p = new int;//在堆区分配内存
+*p = 10;//初始化
+```
+
 ### 3.运算符
 
 #### 优先级
@@ -966,3 +975,305 @@ void Student::show() {
 一般来说，一般将类的属性设置为私有，而通过公有的成员函数来访问属性
 
 #### 类的对象特性
+
+##### 对象的初始化和清理
+
+- 对象的初始化是指在创建对象时，给对象的属性赋初值
+- 对象的清理是指在对象被销毁时，释放对象占用的内存
+
+##### 构造函数和析构函数
+
+构造函数是指在创建对象时自动调用的函数，用于初始化对象的属性
+
+- 没有返回值
+- 函数名与类名相同
+- 可以重载
+- 可以有默认参数
+
+析构函数是指在对象被销毁时自动调用的函数，用于清理对象占用的内存
+
+- 没有返回值
+- 函数名与类名相同，前面加~
+- 不能重载
+- 没有参数
+
+编译器提供的构造函数和析构函数是空实现
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 构造函数
+	Student(string n, int a, double s) {
+		name = n;
+		age = a;
+		score = s;
+	}
+	// 析构函数
+	~Student() {
+		cout << "析构函数被调用" << endl;
+	}
+};
+```
+
+##### 构造函数的分类及调用
+
+- 默认构造函数：没有参数的构造函数
+- 带参数构造函数：有参数的构造函数
+- 拷贝构造函数：用一个对象初始化另一个对象的构造函数
+- 隐式构造函数：编译器自动调用的构造函数
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	// 默认构造函数
+	Student() {
+		name = "无名";
+		age = 0;
+		score = 0.0;
+	}
+	// 带参数构造函数
+	Student(string n, int a, double s) {
+		name = n;
+		age = a;
+		score = s;
+	}
+	// 拷贝构造函数
+	Student(const Student &s) {
+		name = s.name;
+		age = s.age;
+		score = s.score;
+	}
+};
+```
+
+调用：
+
+```cpp
+Student stu1; // 默认构造函数
+Student stu2("张三", 18, 99.5); // 带参数构造函数
+Student stu3(stu2); // 拷贝构造函数
+```
+
+匿名对象
+
+```cpp
+Student("张三", 18, 99.5).show();
+```
+
+匿名对象在使用后会被销毁
+
+同时，不要使用拷贝构造函数来初始化匿名对象，这会使得编译器认为你创建了一个已经创建的对象
+
+##### 拷贝构造函数的调用时机
+
+- 用已经创建的对象初始化另一个对象
+- 值传递的方式给函数参数传值
+- 值方式返回局部对象
+
+##### 构造函数的调用规则
+
+- 如果没有定义构造函数，编译器会提供一个默认构造函数
+- 如果定义了构造函数，编译器不会提供默认构造函数，但会提供默认拷贝构造函数
+- 如果定义了拷贝构造函数，编译器不会提供默认构造函数
+
+##### 深拷贝与浅拷贝
+
+浅拷贝：简单的赋值拷贝
+
+但是，浅拷贝会导致内存泄漏和数据混乱
+
+深拷贝：在堆区分配内存，拷贝数据
+
+析构函数可以将在堆区分配的内存释放掉
+
+如果属性有在堆区分配内存的指针，必须重写拷贝构造函数和析构函数
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	int *arr;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) {
+		name = n;
+		age = a;
+		score = s;
+		arr = new int[10];
+	}
+	
+	// 拷贝构造函数
+	Student(const Student &s) {
+		name = s.name;
+		age = s.age;
+		score = s.score;
+		arr = new int[10];
+		for (int i = 0; i < 10; i++) {
+			arr[i] = s.arr[i];
+		}
+	}
+	
+	// 析构函数
+	~Student() {
+		delete[] arr;
+		cout << "析构函数被调用" << endl;
+	}
+};
+```
+
+##### 初始化列表
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+};
+```
+
+##### 类对象作为类成员
+
+一个类的对象可以作为另一个类的成员
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+};
+class Class {
+public:
+	Student stu;
+	
+	// 带参数构造函数
+	Class(string n, int a, double s) : stu(n, a, s) {
+	}
+};
+```
+
+当其他类的对象作为成员时，会先构造其他类的成员，再构造本类的成员
+
+析构的顺序与构造相反
+
+##### 静态成员
+
+静态成员是指在类中定义的静态变量和静态函数，使用`static`关键字修饰
+
+- 静态成员变量：属于类本身，而不是类的对象
+- 静态成员函数：只能访问静态成员变量和静态成员函数，不能访问非静态成员变量和非静态成员函数
+
+```cpp
+class Student {
+public:
+	static int count; // 静态成员变量
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+		count++;
+	}
+	
+	// 静态成员函数
+	static void showCount() {
+		cout << "学生人数：" << count << endl;
+	}
+};
+```
+
+- 属于整个类
+- 需要在类外进行初始化
+
+```cpp
+int Student::count = 0;
+```
+
+同时，我们可以使用
+
+- 类名来访问 Student::count
+- 对象来访问 s.count
+
+静态变量也可以设置访问权限
+
+静态成员函数是所有对象共享的
+
+同时，静态成员函数不能访问非静态成员变量和非静态成员函数，而只能访问静态成员变量和静态成员函数
+
+```cpp
+class Student {
+public:
+	static int count; // 静态成员变量
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+		count++;
+	}
+	
+	// 静态成员函数
+	static void showCount() {
+		cout << "学生人数：" << count << endl;
+	}
+};
+```
+
+#### 对象模型和this指针
+
+##### 成员变量和成员函数分开存储
+
+编译器会给每个对象分配一块内存空间，存储对象的成员变量
+
+即便是空对象，也会分配一块内存空间，是为了区分对象的地址
+
+总而言之，创建一个类的对象时，只有非静态成员变量会被分配内存空间，成员函数不会被分配内存空间
+
+##### this指针
+
+this指针指向**被调用的成员函数**所在的对象
+
+this指针不需要定义，是隐含在每一个非静态成员函数中的
+
+- 解决名称冲突
+- 返回对象本身
+
+this指针的本质是一个指针常量，是不允许修改的
+
+但是，this指针所指向的值是可以修改的
+
+##### 空指针访问函数成员
+
+空指针访问函数成员是允许的，但是会导致未定义行为
+
+```cpp
+Student *p = nullptr;
+p->show();
+```
+
+##### const修饰成员函数
+
+- 成员函数可以被声明为const，表示该函数不会修改对象的成员变量
+- 成员属性声明时加上mutable，在常函数中依然可以修改
+
+- 声明对象时前加const，表示该对象是常量对象，不能修改成员变量，只能调用常函数
