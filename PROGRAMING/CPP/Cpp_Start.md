@@ -1275,5 +1275,141 @@ p->show();
 
 - 成员函数可以被声明为const，表示该函数不会修改对象的成员变量
 - 成员属性声明时加上mutable，在常函数中依然可以修改
-
 - 声明对象时前加const，表示该对象是常量对象，不能修改成员变量，只能调用常函数
+
+#### 友元
+
+有些私有的属性，如果需要在其他类中访问，就需要友元
+
+##### 全局函数做友元
+
+```cpp
+class Student {
+// 友元函数
+	friend void show(Student s);
+
+public:
+	string name;
+	int age;
+	double score;
+	
+
+};
+```
+
+此时，友元函数可以访问类的私有成员
+
+##### 类做友元
+
+```cpp
+class Student {
+	friend class Class;
+	public:
+	string name;
+	int age;
+	double score;
+};
+class Class {
+public:
+	void show(Student s) {
+		cout << s.name << "\t" << s.age << "\t" << s.score << endl;
+	}
+};
+```
+
+##### 成员函数做友元
+
+```cpp
+class Student {
+	friend void Class::show(Student s);
+	public:
+	string name;
+	int age;
+	double score;
+	};
+class Class {
+public:
+	void show(Student s) {
+		cout << s.name << "\t" << s.age << "\t" << s.score << endl;
+	}
+};
+```
+
+#### 运算符重载
+
+运算符重载是指重新定义运算符的行为，使其适用于自定义数据类型
+
+##### 加号运算符重载
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+	
+	// 运算符重载
+	Student operator+(const Student &s) {
+		return Student(name + s.name, age + s.age, score + s.score);
+	}
+};
+```
+
+##### 左移运算符重载
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+	
+	// 友元函数运算符重载
+	friend ostream& operator<<(ostream &os, const Student &s) {
+		os << s.name << "\t" << s.age << "\t" << s.score;
+		return os;
+	}
+};
+```
+
+```cpp
+int main() {
+	Student s("张三", 18, 99.5);
+	cout << s << endl;
+	return 0;
+}
+```
+
+通常不用成员函数进行重载
+
+通常使用全局函数实现重载
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+};
+void operator<<(ostream &cout, const Student &s) {
+	cout << s.name << "\t" << s.age << "\t" << s.score;
+	return cout;
+}
+// cout << s;
+```
+
+##### 递增运算符重载
+
+```cpp
