@@ -115,3 +115,71 @@ HTTP协议：规定了浏览器发送以及服务器返回内容的格式
 定义：XHR对象用于与服务器交互，通过XMLHttpRequest可以在不刷新页面的情况下，请求特定的URL，获取数据。
 
 关系：axios内部包含着XMLHttpRequest
+
+### 为什么学习XHR？
+
+- 了解AJAX的底层原理
+- 有更多与服务器数据进行通讯的方法
+- 了解axios内部原理
+
+### XHR使用步骤
+
+1. 创建XHR对象
+1. 调用open方法，设置url和请求方法
+1. 监听loadend事件，接收结果
+1. 调用send方法，发送请求
+
+### XHR对象查询参数
+
+浏览器给服务器提供额外的信息，让服务器返回浏览器想要的数据。
+
+语法`http://www.example.com?参数名1=值1&参数名2=值2`
+
+### XHR对象提交数据
+
+使用XHR对象的send方法，提交数据
+
+```JavaScript
+xhr.send('参数名1=值1&参数名2=值2')
+
+```
+
+请求头设置 Content-Type：application/json
+
+请求体携带 Json 字符串
+
+#### XHR对象提交数据 - JSON格式
+
+使用XHR对象的send方法，提交数据
+
+```JavaScript
+xhr.send(JSON.stringify({
+	参数名1：值1，
+	参数名2：值2
+}))
+```
+
+#### XHR对象提交数据 - FormData格式
+
+使用XHR对象的send方法，提交数据
+
+```JavaScript
+xhr.send(new FormData())
+```
+
+### promise
+
+Promise：表示一个异步操作的最终完成（或失败）及其结果值的表示法。
+
+Promise对象有三种状态：
+
+- pending：初始状态，既不是成功，也不是失败
+- fulfilled：操作成功完成
+- rejected：操作失败
+
+好处：
+
+- 逻辑更清晰
+- 了解了axios函数内部运行机制
+- 能解决回调函数地狱的问题
+

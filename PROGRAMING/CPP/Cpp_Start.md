@@ -1413,3 +1413,66 @@ void operator<<(ostream &cout, const Student &s) {
 ##### 递增运算符重载
 
 ```cpp
+student& operator++() {
+	age++;
+	return *this;
+}
+```
+
+返回的是对象本身的引用
+
+这是为了支持链式调用
+
+##### 赋值运算符重载
+
+利用深拷贝解决内存重复释放的问题
+
+```cpp
+Student& operator=(const Student &s) {
+	name = s.name;
+	age = s.age;
+	score = s.score;
+	return *this;
+}
+```
+
+##### 关系运算符重载
+
+```cpp
+bool operator==(const Student &s) {
+	return name == s.name && age == s.age && score == s.score;
+}
+```
+
+##### 函数调用运算符重载
+
+```cpp
+class Student {
+public:
+	string name;
+	int age;
+	double score;
+	
+	// 带参数构造函数
+	Student(string n, int a, double s) : name(n), age(a), score(s) {
+	}
+	
+	// 函数调用运算符重载
+	void operator()() {
+		cout << name << "\t" << age << "\t" << score << endl;
+	}
+};
+```
+
+```cpp
+int main() {
+	Student s("张三", 18, 99.5);
+	s(); // 调用函数调用运算符重载
+	return 0;
+}
+```
+
+#### 继承
+
+继承是指一个类可以从另一个类中继承属性和行为
+
