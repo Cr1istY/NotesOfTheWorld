@@ -1,7 +1,3 @@
-一个月时间
-
-![image](assets/image-20250308195119-yawxjrj.png)
-
 ## Day1
 
 ### 1、JS简介
@@ -1633,7 +1629,7 @@ element.addEventListener('click', function() {});
 ##### 常用方法
 
 * `preventDefault()`: 取消默认行为
-* `stopPropagation()`: 停止传播
+* `stopPropagation()`: 停止冒泡
 * `stopImmediatePropagation()`: 停止传播并阻止其他监听器
 * `composedPath()`: 获取事件路径数组
 
@@ -1648,3 +1644,118 @@ element.addEventListener('click', function() {});
 事件委托实际上是利用事件冒泡的机制，即
 
 * 给父元素注册事件，当触发子元素时，会冒泡到父元素上，从而触发父元素的事件。
+
+#### 阻止事件默认行为
+
+* `event.preventDefault()`: 阻止默认行为
+
+### 2.3 其他事件
+
+#### 1.页面加载事件
+
+* `DOMContentLoaded`: DOM加载完成（无需等待资源加载完成，只需加载完HTML结构）
+* `load`: 页面完全加载，包括所有资源（图片、样式等）
+* `beforeunload`: 页面卸载前触发
+* `unload`: 页面卸载时触发
+
+给 window 添加事件监听器：
+
+```javascript
+window.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM加载完成');
+});
+window.addEventListener('load', function() {
+  console.log('页面完全加载');
+});
+window.addEventListener('beforeunload', function(e) {
+  e.preventDefault();
+  e.returnValue = ''; // 提示用户
+});
+window.addEventListener('unload', function() {
+  console.log('页面卸载');
+});
+```
+
+也可以针对某个元素添加事件监听器：
+
+```javascript
+const img = document.querySelector('img');
+img.addEventListener('load', function() {
+  console.log('图片加载完成');
+});
+```
+
+#### 2.页面滚动事件
+
+滚动条在滚动时触发的事件
+
+- `scroll`: 页面或元素滚动时触发
+- `wheel`: 鼠标滚轮滚动时触发
+- `resize`: 窗口大小改变时触发
+
+```javascript
+window.addEventListener('scroll', function() {
+  console.log('页面滚动');
+});
+window.addEventListener('resize', function() {
+  console.log('窗口大小改变');
+});
+```
+
+获取位置：
+
+- `scrollTop`: 元素顶部距离
+- `scrollLeft`: 元素左侧距离
+- `scrollHeight`: 元素内容高度
+- `scrollWidth`: 元素内容宽度
+
+```javascript
+const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
+const scrollWidth = document.documentElement.scrollWidth || document.body.scrollWidth;
+const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+const clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
+```
+
+获取HTML标签
+
+```javascript
+const html = document.documentElement; // 获取HTML标签
+const body = document.body; // 获取BODY标签
+```
+
+#### 3.页面尺寸事件
+
+- `clientHeight`: 元素可视高度
+- `clientWidth`: 元素可视宽度
+
+不包含滚动条和边框、margin
+
+### 2.4 元素的尺寸和位置
+
+使用场景：
+
+- 获取元素的实际尺寸和位置
+- 当页面滚动到某个位置时，做某些操作，省去了计算的过程
+
+#### 1.获取元素的宽高
+
+- `offsetWidth`: 元素的宽度（包含padding和border）
+- `offsetHeight`: 元素的高度（包含padding和border）
+- 获取的都是可视的宽高，如果盒子隐藏了，获取的宽高为0
+
+#### 2.获取元素的偏移位置
+
+- `offsetTop`: 元素相对于其 offsetParent 的顶部位置
+- `offsetLeft`: 元素相对于其 offsetParent 的左侧位置
+- `offsetParent`: 元素的定位父元素
+
+使用`offsetTop`和`offsetLeft`位置受到父亲定位的影响
+
+```javascript
+const element = document.querySelector('.box');
+const width = element.offsetWidth; // 元素的宽度
+const height = element.offsetHeight; // 元素的高度
+```
+

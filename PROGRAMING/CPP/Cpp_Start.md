@@ -1476,3 +1476,128 @@ int main() {
 
 继承是指一个类可以从另一个类中继承属性和行为
 
+可以极大程度上减少代码的重复，增加逼格
+
+`class 子类名 : 继承方式 父类名`
+
+```c++
+class Base {
+public:
+	void show() {
+		cout << "Base" << endl;
+	}
+};
+// 继承自Base类
+class Derived : public Base {
+public:
+};
+```
+
+**无论什么时候，子类都不能访问父类的私有成员，但是，会被继承下去**
+
+##### 公有继承
+
+继承父类的公有成员和保护成员，并不更换访问权限
+
+##### 保护继承
+
+父类的公有成员和保护成员在子类中是保护的
+
+##### 私有继承
+
+父类的所有成员在子类中都是私有的
+
+##### 继承中的对象模型
+
+父类中的所有的非静态成员变量都会被继承到子类中
+
+##### 继承中的构造和析构顺序
+
+- 构造顺序：父类的构造函数先执行，子类的构造函数后执行
+- 析构顺序：子类的析构函数先执行，父类的析构函数后执行
+
+##### 继承中的同名成员处理
+
+- 如果子类和父类有同名成员，子类的成员会覆盖父类的成员
+
+如果想要访问父类的成员，可以使用作用域解析运算符
+
+```cpp
+Base::show();
+```
+
+子类同名成员函数会覆盖父类的同名成员函数，即便是父类的重载函数
+
+##### 继承中同名的静态成员处理方式
+
+调用作用域可以访问同名的父类静态成员
+
+```cpp
+Derived::Base::show();
+```
+
+##### 多继承语法
+
+```cpp
+class Derived : public Base1, public Base2 {
+public:
+};
+```
+
+Derived类继承了Base1类和Base2类的所有成员
+
+但是，如果Base1类和Base2类有同名成员，编译器会报错
+
+所以，实际开发中不建议使用多继承
+
+##### 菱形继承
+
+菱形继承是指一个类同时继承了两个类，而这两个类又继承了同一个父类
+
+动物、羊、骆驼、草泥马
+
+羊和骆驼都继承了动物类，而草泥马又继承了羊和骆驼
+
+造成的问题：
+
+1. 当草泥马调用动物类的成员时，编译器不知道调用哪个父类的成员（二义性）
+1. 草泥马类会继承两个动物类的成员，导致内存浪费
+
+解决：
+
+1. 加以作用域进行区分
+1. 使用虚继承
+
+```cpp
+class Animal {
+public:
+	void show() {
+		cout << "Animal" << endl;
+	}
+};
+class Sheep : virtual public Animal {
+public:
+	void show() {
+		cout << "Sheep" << endl;
+	}
+};
+class Camel : virtual public Animal {
+public:
+	void show() {
+		cout << "Camel" << endl;
+	}
+};
+class GrassMudHorse : public Sheep, public Camel {
+public:
+	void show() {
+		cout << "GrassMudHorse" << endl;
+	}
+};
+```
+
+Animal类被称为虚基类
+
+vbptr - 虚基类指针 - 指向vbtable - 虚基类表
+
+#### 多态
+
