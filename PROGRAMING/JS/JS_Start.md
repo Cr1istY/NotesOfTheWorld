@@ -1759,3 +1759,141 @@ const width = element.offsetWidth; // 元素的宽度
 const height = element.offsetHeight; // 元素的高度
 ```
 
+## 2.Day4 - 日期对象
+
+### 1. 日期对象
+
+JavaScript 中的日期对象用于处理日期和时间。它是一个内置对象，提供了多种方法来获取和操作日期和时间。
+
+#### 1.1 实例化
+
+使用`new Date()` 创建日期对象：
+
+```javascript
+const date = new Date(); // 当前日期和时间
+const specificDate = new Date('2025-10-01'); // 指定日期
+const specificDateTime = new Date('2025-10-01T12:00:00'); // 指定日期和时间
+const timestamp = new Date(1696156800000); // 时间戳
+```
+
+#### 1.2 日期对象的常用方法
+
+|方法|作用|说明|
+|---|---|---|
+|`getFullYear()`|获取年份|返回四位数的年份|
+|`getMonth()`|获取月份|返回0-11，0表示1月，11表示12月|
+|`getDate()`|获取日期|返回1-31|
+|`getDay()`|获取星期几|返回0-6，0表示星期天，6表示星期六|
+|`getHours()`|获取小时|返回0-23|
+|`getMinutes()`|获取分钟|返回0-59|
+|`getSeconds()`|获取秒数|返回0-59|
+|`getMilliseconds()`|获取毫秒数|返回0-999|
+|`getTime()`|获取时间戳|返回自1970年1月1日以来的毫秒数|
+|`toLocaleString()`|格式化日期|根据本地设置格式化日期|
+|`toISOString()`|格式化为ISO字符串|返回ISO格式的日期字符串|
+|`toDateString()`|格式化为日期字符串|返回日期部分的字符串|
+|`toTimeString()`|格式化为时间字符串|返回时间部分的字符串|
+|`toUTCString()`|格式化为UTC字符串|返回UTC格式的日期字符串|
+
+#### 1.3 时间戳
+
+时间戳是指自1970年1月1日00:00:00 UTC以来经过的毫秒数。可以通过`Date.now()`获取当前时间戳：
+
+将来的时间戳 - 现在的时间戳 = 剩余时间毫秒数
+
+由于时间无法直接计算，所以需要将时间转换为时间戳进行计算。
+
+```javascript
+const futureDate = new Date('2025-10-01');
+const currentDate = new Date();
+const futureTimestamp = futureDate.getTime();
+const currentTimestamp = currentDate.getTime();
+const remainingTime = futureTimestamp - currentTimestamp; // 剩余时间毫秒数
+```
+
+### 2. 节点操作
+
+#### 2.1 DOM节点
+
+DOM节点是DOM树中的每个元素、文本或属性。节点分为以下几种类型：
+
+* **元素节点（Element Node）：表示HTML元素**
+* 文本节点（Text Node）：表示元素或属性中的文本
+* 属性节点（Attribute Node）：表示元素的属性
+* 注释节点（Comment Node）：表示注释
+* 文档节点（Document Node）：表示整个文档
+
+#### 2.2 查找节点
+
+通过关系来查找节点：
+
+- `parentNode`: 获取父节点
+- `children`: 获取子元素节点列表，是一个伪数组
+- `nextElementSibling`: 获取下一个兄弟元素节点
+- `previousElementSibling`: 获取上一个兄弟元素节点
+
+#### 2.3 增加节点
+
+##### 1. 创建节点
+
+`createElement()` 创建元素节点
+
+##### 2. 追加节点
+
+`appendChild()` 将新创建的节点添加到 DOM 中
+
+要想在页面上显示新创建的节点，需要将其添加到 DOM 中：
+
+```javascript
+const newElement = document.createElement('div'); // 创建新元素
+newElement.textContent = 'Hello, World!'; // 设置文本内容
+document.body.appendChild(newElement); // 将新元素添加到页面
+```
+
+#### 2.4 克隆节点和删除节点
+
+##### 1. 克隆节点
+
+`cloneNode()` 克隆节点
+
+```javascript
+const clonedElement = newElement.cloneNode(true); // 深度克隆
+document.body.appendChild(clonedElement); // 将克隆的节点添加到页面
+```
+
+当传入`true` 时，表示深度克隆，即克隆节点及其所有子节点；
+
+当传入 `false` 时，表示浅克隆，只克隆节点本身。
+
+##### 2. 删除节点
+
+`removeChild()` 删除节点
+
+```javascript
+const parentElement = document.querySelector('.parent');
+const childElement = document.querySelector('.child');
+parentElement.removeChild(childElement); // 删除子节点
+```
+
+删除元素必须经过父元素的同意。
+
+即必须先获取父元素，再通过父元素删除子元素。
+
+### 3. M端事件
+
+#### 3.1 触摸事件
+
+触摸事件是移动设备上常用的事件类型，主要用于处理触摸屏幕的交互。
+
+触摸事件包括：
+
+* `touchstart`: 手指触摸屏幕时触发
+* `touchmove`: 手指在屏幕上滑动时触发
+* `touchend`: 手指离开屏幕时触发
+* `touchcancel`: 触摸事件被中断时触发（如来电、短信等）
+
+### 4. swiper插件
+
+swiper是一个流行的移动端滑动插件，常用于实现轮播图、图片滑动等效果。
+
+## 2.Day5 - Window对象
