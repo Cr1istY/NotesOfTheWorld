@@ -1803,4 +1803,26 @@ void swap(T &a, T &b) {
 
 ### 2. 类模板
 
+建立一个通用类，类中的成员数据类型可以不具体指定，用一个虚拟的类型来代表
+
+#### 2.1 类模板语法
+
+使用`template <typename T>`或`template <class T>`来定义类模板
+
+```cpp
+template <typename T>
+class MyArray {
+public:
+	T arr[10];
+	void show() {
+		for (int i = 0; i < 10; i++) {
+			cout << arr[i] << " ";
+		}
+	}	
+}
+int main() {
+	MyArray<int> myArray;	
+}
+```
+
 

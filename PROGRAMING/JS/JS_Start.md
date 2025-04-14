@@ -2340,7 +2340,422 @@ JavaScript 中的垃圾回收机制是自动的，不需要手动释放内存
 
 #### 1.5 闭包
 
-闭包是指函数内部可以访问外部函数的变量
+闭包是指函数外部可以访问函数内部的变量
 
-闭包 = 函数 + 函数可以访问的外部变量
+闭包 = 内层函数 + 外层函数的变量
+
+基本格式：
+
+```javascript
+function outer() {
+  const a = 1;
+  function inner() {
+    console.log(a);
+  }
+  return inner;
+}
+const fn = outer();
+fn(); // 1
+```
+
+闭包的作用：
+
+1. 实现数据的私有
+
+但是，闭包会导致内存泄漏，所以需要注意
+
+#### 1.6 变量提升
+
+变量提升是指变量的声明会被提升到作用域的顶部，但是赋值不会被提升
+
+只在用`var`声明的变量时产生
+
+```javascript
+console.log(a); // undefined
+var a = 1;
+```
+
+### 2. 函数进阶
+
+#### 2.1 函数提升
+
+函数提升是指函数的声明会被提升到作用域的顶部，但是函数表达式不会被提升
+
+```javascript
+fn(); // 1
+function fn() {
+  console.log(1);
+}
+```
+
+```javascript
+fn(); // 报错
+const fn = function() {
+  console.log(1);
+}
+```
+
+#### 2.2 函数的参数
+
+函数的参数是指函数的形参和实参
+
+形参：函数定义时的参数，用于接收实参的值
+
+实参：函数调用时的参数，用于传递给形参的值
+
+```javascript
+function fn(a, b) {
+  console.log(a, b);
+}
+fn(1, 2); // 1 2
+```
+
+##### 动态参数
+
+动态参数是指函数的*参数个数***不确定**，可以使用`arguments`对象来获取
+
+`arguments`对象是一个类数组对象，包含了函数调用时传递的所有参数，只存在于函数内部
+
+```javascript
+function fn() {
+  console.log(arguments); // [1, 2, 3]
+}
+fn(1, 2, 3);
+```
+
+动态参数是一个伪数组，不具备数组的方法，但可以使用for循环
+
+##### 剩余参数
+
+剩余参数是指函数的*参数个数***不确定**，可以使用`...`来获取
+
+`...`是一个运算符，用于将数组或对象展开成单个元素
+
+```javascript
+function fn(...args) {
+  console.log(args); // [1, 2, 3]
+}
+fn(1, 2, 3);
+```
+
+剩余参数是一个真数组，在实际开发中提倡使用剩余参数
+
+##### 展开运算符
+
+展开运算符是指将数组或对象展开成单个元素
+
+`...`是一个运算符，用于将数组或对象展开成单个元素
+
+```javascript
+const arr = [1, 2, 3];
+console.log(...arr); // 1 2 3
+```
+
+1. 不会修改原数组
+2. 常用于求数组最大值、合并数组等。
+
+#### 2.3 箭头函数
+
+箭头函数是一种简化函数定义的方式
+
+箭头函数的基本格式：
+
+```javascript
+const fn = (参数) => {
+  函数体
+}
+```
+
+箭头函数的简化格式：
+
+```javascript
+const fn = (参数) => 函数体
+```
+
+箭头函数更适用于替代匿名函数，用于函数表达式写法
+
+1. 只有一个参数时，可以省略小括号
+2. 只有一个表达式时，可以省略大括号
+3. 只有一个表达式时，可以省略return
+4. 箭头函数的this指向，是定义时的this，而不是调用时的this
+
+##### 箭头函数的this指向
+
+箭头函数的this指向上一层的作用域
+
+#### 2.4 解构赋值
+
+解构赋值是指将数组或对象中的值赋值给变量
+
+##### 数组解构赋值
+
+数组解构赋值是指将数组中的值赋值给变量
+
+```javascript
+const [a, b, c] = [1, 2, 3];
+console.log(a, b, c); // 1 2 3
+```
+
+##### 对象解构赋值
+
+对象解构赋值是指将对象中的属性和方法赋值给变量
+
+```javascript
+const { name, age } = { name: 'John', age: 30 };
+console.log(name, age); // John 30
+```
+
+属性名和变量名必须相同
+
+对象结构赋值可以重命名
+
+```javascript
+const { name: myName, age: myAge } = { name: 'John', age: 30 };
+console.log(myName, myAge); // John 30
+```
+
+多级对象结构：
+
+```javascript
+const obj = {
+  name: 'John',
+  age: 30,
+  address: {
+    city: 'Beijing',
+    country: 'China'
+  }
+};
+const { name, age, address: { city, country } } = obj;
+console.log(name, age, city, country); // John 30 Beijing China
+```
+
+##### 必须加分号的两种情况
+
+1. 当一行代码以`(`开头时，必须加分号（立即执行函数）
+2. 当一行代码以`[`开头时，必须加分号（解构赋值）
+
+#### 2.5 forEach遍历数组
+
+主要使用场景：遍历数组的每个元素，对每个元素执行相同的操作
+
+```javascript
+const arr = [1, 2, 3];
+arr.forEach((item, index, array) => {
+  console.log(item, index, array);
+});
+// 1 0 [1, 2, 3]
+// 2 1 [1, 2, 3]
+// 3 2 [1, 2, 3]
+```
+
+## 3.Day2 - 构造函数&数据常用函数
+
+### 1 深入对象
+
+#### 1.1 创建对象的三种方式
+
+1. 字面量方式：
+
+```javascript
+const obj = { name: 'John', age: 30 };
+```
+
+2. new Object()：
+
+```javascript
+const obj = new Object();
+obj.name = 'John';
+obj.age = 30;
+```
+
+3. 构造函数创建：
+
+```javascript
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+const obj = new Person('John', 30);
+```
+
+#### 1.2 构造函数
+
+构造函数是一种特殊的函数，用于创建对象
+
+命名约定：
+
+1. 他们的命名以大写字母开头
+2. 只能由new运算符调用
+
+```javascript
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const Me = new Person('John', 30);
+```
+
+#### 1.3 实例成员&静态成员
+
+实例成员：通过构造函数创建的对象成为实例对象，实例对象中的熟悉和方法被叫做实力成员
+
+1. 为构造函数传入参数，创建结构相同而属性不同的对象
+2. 构造函数创建的对象彼此独立，互不影响。
+
+静态成员：通过构造函数创建的对象成为实例对象，实例对象中的熟悉和方法被叫做实例成员
+
+1. 静态成员是构造函数的属性和方法，而不是实例对象的属性和方法
+2. 静态成员只能通过构造函数调用，不能通过实例对象调用
+
+### 2 内置构造函数
+
+在Javascript中，创建基本数据类型时，实际上，是创造一个对象
+
+字符串、数值、布尔都有专门的构造函数，这些被我们称为包装类型
+
+#### 2.1 Object
+
+Obeject是内置的构造函数，所有对象都是Object的实例
+
+##### 三个常用的静态方法
+
+1. Object.keys 静态方法，返回一个数组，数组中的元素是该对象自身可枚举的属性名
+2. Object.values 静态方法，返回一个数组，数组中的元素是该对象自身可枚举的属性值
+3. Object.assign 静态方法，用于对象的拷贝，将源对象（source）的所有可枚举属性，复制到目标对象（target）
+
+#### 2.2 Array
+
+Array是内置的构造函数，它创建一个数组，数组中的元素是传入的参数。
+
+forEach filter map reduce find every
+
+| 顺序 | 方法名       | 功能描述                                                                 | 返回值描述                                                                 | 是否改变原数组 | 版本   |
+|------|--------------|--------------------------------------------------------------------------|----------------------------------------------------------------------------|----------------|--------|
+| 1    | push()       | 在结尾向数组添加一或多个元素                                            | 返回新数组长度                                                             | Y              | ES5-   |
+| 2    | unshift()    | 在开头向数组添加一或多个元素                                            | 返回新数组长度                                                             | Y              | ES5-   |
+| 3    | pop()        | 删除数组的最后一位                                                      | 返回被删除的数据                                                           | Y              | ES5-   |
+| 4    | shift()      | 移除数组的第一项                                                        | 返回被删除的数据                                                           | Y              | ES5-   |
+| 5    | reverse()    | 反转数组中的元素                                                        | 返回反转后数组                                                             | Y              | ES5-   |
+| 6    | sort()       | 以字母顺序(字符串Unicode码点)对数组进行排序                              | 返回新数组                                                                 | Y              | ES5-   |
+| 7    | splice()     | 在指定位置删除指定个数元素再增加任意个数元素（实现数组任意位置的增删改） | 返回删除的数据所组成的数组                                                 | Y              | ES5-   |
+| 8    | concat()     | 通过合并（连接）现有数组来创建一个新数组                                | 返回合并之后的数组                                                         | N              | ES5-   |
+| 9    | join()       | 用特定的字符,将数组拼接形成字符串 (默认",")                              | 返回拼接后的字符串                                                         | N              | ES5-   |
+| 10   | slice()      | 裁切指定位置的数组                                                      | 被裁切的元素形成的数组                                                     | N              | ES5-   |
+| 11   | toString()   | 将数组转换为字符串                                                      | 字符串                                                                     | N              | ES5-   |
+| 12   | valueOf()    | 查询数组原始值                                                          | 数组的原始值                                                               | N              | ES5-   |
+| 13   | indexOf()    | 查询某个元素在数组中第一次出现的位置                                    | 存在该元素,返回下标,不存在 返回 -1                                         | N              | ES5-   |
+| 14   | lastIndexOf()| 反向查询数组某个元素在数组中第一次出现的位置                            | 存在该元素,返回下标,不存在 返回 -1                                         | N              | ES5-   |
+| 15   | forEach()    | 遍历数组,每次循环中执行传入的回调函数                                   | 无/(undefined)                                                             | N              | ES5-   |
+| 16   | map()        | 遍历数组, 每次循环时执行传入的回调函数,根据回调函数的返回值,生成一个新的数组 | 有/自定义                                                                  | N              | ES5-   |
+| 17   | filter()     | 遍历数组, 每次循环时执行传入的回调函数,筛选满足条件的元素到新数组中      | 满足条件的元素组成的新数组                                                 | N              | ES5-   |
+| 18   | every()      | 判断数组中所有的元素是否满足某个条件                                    | 全都满足返回true 只要有一个不满足 返回false                                | N              | ES5-   |
+| 19   | some()       | 判断数组中是否存在满足某个条件的元素                                     | 只要有一个元素满足条件就返回true,都不满足返回false                         | N              | ES5-   |
+| 20   | reduce()     | 遍历数组, 每次循环时执行传入的回调函数,将结果作为初始值传入下一次函数中 | 最终操作的结果                                                             | N              | ES5-   |
+| 21   | reduceRight()| 用法同reduce,只不过是从右向左                                          | 同reduce                                                                  | N              | ES5-   |
+| 22   | includes()   | 判断一个数组是否包含一个指定的值                                        | 是返回 true，否则false                                                    | N              | ES6    |
+| 23   | Array.from() | 接收伪数组,返回对应的真数组                                             | 对应的真数组                                                               | N              | ES6    |
+| 24   | find()       | 遍历数组,执行回调函数,返回满足条件的第一个元素                          | 满足条件第一个元素/否则返回undefined                                       | N              | ES6    |
+| 25   | findIndex()  | 遍历数组,执行回调函数,返回满足条件的第一个元素下标                      | 满足条件第一个元素下标,不存在=>-1                                          | N              | ES6    |
+| 26   | fill()       | 用给定值填充一个数组                                                    | 新数组                                                                     | Y              | ES6    |
+| 27   | flat()       | 将嵌套的数组“拉平”，变成一维的数组                                      | 返回一个新数组                                                             | N              | ES6    |
+| 28   | flatMap()    | flat()和map()的组合版 , 先通过map()返回一个新数组,再将数组拉平           | 返回新数组                                                                 | N              | ES6    |
+
+#### 2.3 String
+
+split startsWith includes substring
+
+#### 2.4 Number
+
+Number()直接使用传数字
+
+toFixed()设置保留小数位的长度
+
+### 3.Day3 - 深入面向对象
+
+#### 1 编程思想
+
+##### 1.1 面向过程
+
+##### 1.2 面向对象
+
+#### 2 构造函数
+
+构造函数存在内存浪费问题
+
+#### 3 原型
+
+##### 3.1 原型
+
+每一个构造函数都有一个原型对象，原型对象有一个属性constructor，指向构造函数本身
+
+构造函数都有一个prototype属性，指向原型对象
+
+公共的属性写到构造函数里面
+
+公共的方法写到目标原型里面
+
+同时，构造函数和原型对象中的this都指向实例对象
+
+##### 3.2 constructor属性
+
+每一个实例对象都有一个constructor属性，指向构造函数本身
+
+可以重新指回constructor属性
+
+##### 3.3 对象原型
+
+在每一个实例对象中，都内置了一个__proto__属性，指向构造函数的原型对象
+
+__proto__属性是js非标准属性
+
+同时，__proto__属性是只读的
+
+![alt text](image.png)
+
+#### 4 原型继承
+
+使用 const 定义一个基类
+
+```javascript
+const Person = function(name, age) {}
+Person.prototype.sayName = function() {}
+```
+
+使用 const 定义一个子类
+
+```javascript
+
+const Student = function(name, age, score) {} 
+Student.prototype = Object.create(Person.prototype)
+```
+
+总结：
+
+```javascript
+// 父类
+function Person () {
+  this.eye = eye
+  this.hair = hair
+}
+
+// son
+function Woman () {
+
+}
+// 继承
+Woman.prototype = new Person()
+Woman.prototype.constructor = Woman
+// 添加方法
+Woman.prototype.sayName = function () {
+  console.log('my name is ' + this.name)
+}
+```
+
+#### 5 原型链
+
+### 3.Day4 - 高阶技巧
+
+#### 1 深浅拷贝
+
 
