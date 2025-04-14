@@ -2758,4 +2758,35 @@ Woman.prototype.sayName = function () {
 
 #### 1 深浅拷贝
 
+##### 1.1 浅拷贝
 
+对于浅拷贝：
+
+拷贝对象后，里面的属性值是简单数据类型则直接拷贝值
+
+如果属性值是复杂数据类型，则拷贝的是内存地址，两个对象指向同一个内存地址，如果其中一个对象修改了内存地址，那么另一个对象也会被修改
+
+```javascript
+let obj = {a: 1, b: 2}
+let obj2 = obj
+obj2.a = 3
+console.log(obj) // {a: 3, b: 2}
+console.log(obj2) // {a: 3, b: 2}
+console.log(obj === obj2) // true
+console.log(obj.a === obj2.a) // true
+console.log(obj.b === obj2.b) // true
+```
+
+##### 1.2 深拷贝
+
+深拷贝拷贝的是对象，而不是地址
+
+常见方法：
+
+1. 通过递归实现深拷贝
+2. 利用js库lodash重点cloneDeep()实现深拷贝
+3. 利用json实现深拷贝
+
+#### 2 异常处理
+
+##### 2.1 throw 抛异常
