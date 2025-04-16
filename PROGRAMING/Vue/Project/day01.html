@@ -9,7 +9,9 @@
     
     <div id="app">
         <h1>{{ msg }}</h1>
+        <button @click="Fn">-</button>
         <span>{{ count }}</span>
+        <button v-on:click="count++">+</button>
     </div>
 
 
@@ -22,7 +24,12 @@
             data: { 
                 msg: 'Hello Vue!',
                 count: '666'
-            } // 数据   
+            }, // 数据   
+            methods: {
+                Fn() {
+                    this.count--
+                }
+            }
         })
     </script>
 </body>
