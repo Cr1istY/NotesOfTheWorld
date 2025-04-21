@@ -73,3 +73,15 @@ if __name__ == '__main__':
 ### 常用控件
 
 #### 下拉框 QComboBox
+
+#### 单选框 QCheckBox
+
+#### 项目：进制转换器
+
+#### 框组 QButtonGroup
+
+##### QTbuttonGroup
+
+#### 文本框 QTextEdit
+
+
