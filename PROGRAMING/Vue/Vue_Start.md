@@ -332,7 +332,7 @@ Vue生命周期过程中，会自动运行一些函数，被称为生命周期�
 3. vue create 项目名
 4. npm run serve
 
-![alt text](image.png)
+![alt text](./img/image.png)
 
 #### 脚手架文件系统
 
@@ -600,3 +600,93 @@ directives: {
 
 在创建插槽时，在`<slot>`标签内添加内容，即可完成默认值的设置
 
+#### 具名插槽
+
+需求：一个组件内有多处结构，需要进行定制
+
+默认插槽只能由一个结构进行定制
+
+1. 多个slot使用name属性进行区分
+2. template使用时，配合v-slot，使用名字分发插槽
+3. v-slot:插槽名 简化为 #插槽名
+
+创建具名插槽：
+
+```javascript
+// 具名插槽 - 作用域插槽
+<template>
+   <div class="dialog-header">
+      <slot name="header"></slot>
+      <slot name="body"></slot>
+      <slot name="footer"></slot>
+   </div>
+</template>
+```
+
+使用：
+
+```javascript
+<Mydialog>
+  <template v-slot:header>
+   <div>自定义内容<div>
+  </template>
+</Mydialog>
+```
+
+#### 插槽 - 作用域插槽
+
+定义：定义slot插槽的时候，是可以传值的。在插槽上可以绑定数据，将来使用组件时可以进行使用
+
+1. 给slot标签，以添加属性的方式进行传值
+2. 所有添加的属性，都会被传入一个对象当中
+3. 在template中，通过`#插槽名="obj"`的方式接收，默认插槽名为default
+
+### 单页应用程序
+
+单元应用程序：SPA - Signle Page Application
+
+即，所有功能在**一个**html页面上完成
+
+![单页应用程序 vs 多页应用程序](./img/屏幕截图%202025-04-24%20170626.png)
+
+- 单页：系统类网址/内部网站/文档类网站/移动端网站 - 关注性能
+- 多页：公司官网/电商类网站 - 考虑首屏加载速度
+
+#### 路由
+
+一一对应的映射关系
+
+生活中的路由：设备与ip的映射关系
+
+Vue中的路由：路径与组件的映射关系
+
+#### VueRouter
+
+作用：修改地址栏路由时，切换显示匹配的组件
+
+说明：是Vue官方的一个插件，是一个第三方包
+
+官网：[https://v3.router.vuejs.org/zh](https://v3.router.vuejs.org/zh)
+
+##### VueRouter的使用（5 + 2）
+
+5个常用步骤：
+
+1. 下载：VueRouter模块当工程中。2（Vue2）33(Vuerouter3.x/Vuex3.x)、3（Vue3）44
+2. 引入
+3. 安装注册
+4. 创建路由对象
+5. 注入，将路由对象注入到new Vue实例中，建立关联
+
+2个关键步骤：
+
+1. 创建需要的组件，配置路由规则
+2. 配置导航，配置路由出口（路径匹配的组件显示的位置）
+
+##### 组件分类
+
+组件分类：.vue文件分为 页面组件和复用组件
+
+- 将页面组件放在 src/views下
+
+- 将复用组件放在 src/components下
