@@ -1,6 +1,6 @@
 # Vue2 + Vue3
 
-## Day1
+## Vue2 - Day1
 
 ### Vue快速上手
 
@@ -841,4 +841,191 @@ vuex 是 vue 的**状态管理工具**，状态就是数据（vuex 帮助我们�
 
 目标：基于脚手架创建vuex环境
 
+#### 创建一个空仓库
 
+目标：安装vuex仓库，初始化一个仓库
+
+1. yard add vuex@3
+2. 新建 store/index.js 专门存放vuex
+3. Vue.use(Vuex)
+4. 创建仓库 new Vuex.Store({})
+5. 在 main.js 中引入仓库，挂载到 Vue 实例中
+
+#### 核心概念 - state 状态
+
+目标：明确如何给仓库提供数据，如何使用仓库的数据
+
+1. 提供数据：State 提供唯一的公共数据源，所有共享的数据都要统一放到 Store 的 State 中，在 state 对象中可以添加我们需要共享的数据
+2. 使用数据：通过 mapState 辅助函数将 store 中的 state 映射到局部计算属性中，使用 `this.$store.state.xxx` 获取数据
+
+#### 核心概念 - mutations
+
+目标：明确 vuex 同样遵循单向数据流，组件中不能直接修改仓库的数据
+
+通过 strict:true 严格模式，在严格模式下，不允许在 mutation 外部修改 state
+
+1. 定义 mutations 对象，对象中存放修改 state 的方法
+2. 组件中提交调用 mutations 中的方法，通过 `this.$store.commit('方法名', 参数)`
+
+目标：掌握 mutations 传参语法
+
+提交的mutations方法，可以接受两个参数，第一个参数是state，第二个参数是传递过来的参数
+
+只能传递一个参数，如果传递多个参数，第二个参数请以对象形式发送，对象中的 key 为参数名，value 为参数值
+
+1. 提供 mutations 函数（带参数 - 提交载荷 payload）
+
+#### 辅助函数 - mapMutations
+
+mapMutations 辅助函数仅仅是将 store 中的 mutations 映射到局部方法，在局部组件中，你可以这样使用：`this.xxx()`
+
+#### 核心概念 - actions
+
+目标：掌握 actions 的基本使用，处理异步操作
+
+说明：对于 mutations 来说，他必须是同步的
+
+1. 提供 actions 方法，actions 不能直接操作 state，还是需要 commit mutation
+2. 页面中 dispatch 调用 actions 中的方法，通过 `this.$store.dispatch('方法名', 参数)`
+
+#### 辅助函数 - mapActions
+
+mapActions 辅助函数仅仅是将 store 中的 actions 映射到局部方法 methods 中，在局部组件中，你可以这样使用：`this.xxx()`
+
+#### 核心概念 - getters
+
+说明：除了 state 本身，有时我们还需要从 state 中派生出一些状态，（例如：过滤后的列表，或者根据 state 的数据进行加工处理，然后返回给用户）而有些状态需要基于 state 的数据进行计算，那么我们就需要 getters
+
+1. 定义 getters 对象，对象中存放计算属性，通过 `this.$store.getters.xxx` 获取数据
+2. 组件中通过 mapGetters 辅助函数将 store 中的 getters 映射到局部计算属性中，使用 `this.xxx` 获取数据
+
+注意点：
+
+1. 形参第一个参数，就是 state
+2. 必须要有返回值，返回值就是getter的值
+
+#### 核心概念 - 模块 module （进阶语法）
+
+由于 vuex 使用单一状态数，应用的所有状态会被集中到一个对象中。当项目越来越大时，vuex 会变得难以维护。
+
+模块拆分：
+
+1. 新建 store/modules/xxx.js
+2. 将单一状态树下的内容，拆分到各个模块中
+
+实际上，尽管已经拆分了，但是，modules 的内容，依然会合并到 store 中，只是被拆分的内容，会以模块为单位进行管理和维护
+
+使用模块中的数据：
+
+1. 直接通过模块名访问 $store.state.模块名.xxx
+2. 通过 mapState 辅助函数将模块中的 state 映射到局部计算属性中
+   1. 默认根级别的访问：`mapState(['xxx'])`
+   2. 子模块的映射：`mapatState({'xxx': '[模块名]'})` - 需要开启命名空间`namespaced: true`
+
+##### module - getters
+
+1. 直接通过模块名访问 `$store.getters[模块名.xxx]`
+2. 通过 mapGetters 映射：
+   1. 默认根级别的访问：`mapGetters(['xxx'])`
+   2. 子模块的映射：`mapGetters({'xxx': '[模块名]'})` - 需要开启命名空间`namespaced: true`
+
+##### module - mutations
+
+默认模块中的 mutation 和 actions 会被挂载到全局，需要开启命名空间，才会挂载到子模块
+
+1. 直接通过模块名访问 `$store.commit(模块名.xxx, 参数)`
+2. 通过 mapMutations 映射：
+   1. 默认根级别的访问：`mapMutations(['xxx'])`
+   2. 子模块的映射：`mapMutations({'xxx': '[模块名]'})` - 需要开启命名空间`namespaced: true`
+
+##### module - actions
+
+与上类似。
+
+## vue2购物车案例
+
+### 创建项目
+
+目的：基于 VueCli 自定义创建项目脚手架
+
+安装脚手架 - 创建项目 - 选择自定义
+
+1. Babel/Router/Vuex/ESLint/Linter
+2. Vue2.x
+3. VueRouter hash模式
+4. CSS预处理 Less
+5. ESlint：Standard & Lint on Save
+6. 配置文件 dedicated config files
+
+#### 调整初始化目录
+
+目录：将目录调整成符合**企业规范**的目录
+
+1. 删除多余的文件
+2. 修改路由配置和APP.vue
+3. 新增 两个目录 api / utils
+   1. api接口模块：发送ajax请求的接口模块
+   2. utils工具模块：封装的工具模块
+
+### vant 组件库
+
+目标：认识第三方组件库 vant-ui
+
+组件库就是对组件的封装
+
+[vant-ui](https://vant-ui.github.io)
+
+#### 其他 Vue 组件库
+
+一般会按照不同平台进行分类：
+
+1. PC端：[ElementUI](https://element.eleme.cn)、[iView](https://www.iviewui.com)
+2. 移动端：[AntDesign](https://ant.design/)、[Vant](https://vant-ui.github.io)
+
+#### vant全部导入与按需导入
+
+推荐使用自动按需导入
+
+#### 项目中的 vw 适配
+
+目标：基于 postcss 插件，实现项目 vw 适配
+
+#### 路由设计配置
+
+但凡是单个页面独立展示的，都是一级路由
+
+## Vue3 - day1
+
+### 为什么要学Vue3
+
+1. Vue3 已经成为了默认版本
+
+#### Vue3 的优势
+
+![vue3-advantage](./img/屏幕截图%202025-04-30%20125622.png)
+
+#### Vue2 选项式API vs Vue3 组合式API
+
+### creat-vue搭建Vue3项目
+
+#### 认识 create-vue
+
+create-vue 是 Vue 官方新的脚手架工具，底层切换到了 **vite（下一代构建工具）**，为开发提供极速响应。
+
+#### 使用create-vue创建项目
+
+1. 前提环境条件：
+   1. 已安装 16.0 或更高版本的 Node.js
+   2. 使用 node -v 命令检查 Node.js 版本
+2. 创建一个Vue项目
+   1. npm init vue@latest
+   2. 这一指令会安装并执行 create-vue 命令
+
+### 熟悉项目目录与关键文件
+
+![vue3项目目录](./img/屏幕截图%202025-04-30%20160220.png)
+
+- 加上setup允许直接使用组合式API
+- 组件直接导入就可以使用
+
+### 组合式API - setup选项
