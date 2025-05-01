@@ -1029,3 +1029,123 @@ create-vue 是 Vue 官方新的脚手架工具，底层切换到了 **vite（下
 - 组件直接导入就可以使用
 
 ### 组合式API - setup选项
+
+#### setup选项的写法和执行时机
+
+setup可以写成一个函数，其执行时机早于beforeCreate钩子函数
+
+setup函数中获取不到this
+
+vue3中尽量不要使用this
+
+#### setup选项中写代码的特点
+
+数据 和 函数 需要在 setup 最后进行 return，才能在模板中应用
+
+问题：每次都要return，比较麻烦，有没有更好的写法？
+
+使用`<script setup>`语法糖
+
+### 组合式API - reactive 和 ref 函数
+
+在vue当中，默认的数据并不是响应式的，需要使用reactive函数和ref函数进行处理，才能实现响应式
+
+推荐使用 ref 函数，更加灵活统一
+
+#### reactive
+
+作用：接收**对象类型数据的参数传入**并返回一个**响应式对象**
+
+1. 从 vue 中导入 reactive 函数
+2. 在`<script setup>` 中调用 reactive 函数，传入对象类型的数据，并接收返回值
+
+#### ref
+
+作用：接收**简单数据类型**或者**对象类型数据的参数传入**并返回一个**响应式对象**
+
+实际上ref函数，内部就是调用了reactive函数，他帮助你创建一个响应式的对象（是在原有传递函数的基础上，多加了一层，将其包成了对象）
+
+注意点：在脚本中访问数据需要通过`.value`，在模板中访问时不需要
+
+### 组合式API - computed
+
+计算属性的基本思想和 Vue2 中的 computed 一致，都是通过函数返回一个值，然后通过模板进行展示
+
+1. 从 vue 中导入 computed 函数
+2. **执行函数** 在回调参数中return基于**响应式数据**计算得到的值，用变量接收
+
+- 计算属性中不应该有“副作用”
+- 避免直接修改计算属性的值
+
+### 组合式API - watch
+
+#### watch
+
+作用：监听某个数据，当数据发生变化时，执行对应的回调函数
+
+两个额外的参数：immediate（立即执行）、deep（深度搜索）
+
+#### 基础使用 - 监听单个数据
+
+1. 导入 watch 函数
+2. 执行 watch 函数，传入需要监听的数据，以及回调函数
+
+```javascript
+import { watch, ref } from 'vue'
+const count = ref(0)
+watch(count, (newValue, oldValue)) => {
+   console.log(newValue, oldValue)
+}, {
+   immediate: true
+}
+```
+
+#### immediate
+
+说明：在监视器创建时立即执行一次回调函数，响应式数据变化之后继续执行回调函数
+
+```javascript
+const count = ref(0)
+watch(count, (newValue, oldValue)) => {
+   console.log(newValue, oldValue)
+}, {
+   immediate: true
+}
+```
+
+#### deep
+
+说明：默认 watch 进行的是浅层监视，即ref里面是简单类型，可以直接监视，但是如果里面是复杂的对象，则无法进行监视（监视的是对象的地址）
+
+所以，需要开启 deep 选项
+
+#### 精确监视对象的某个属性
+
+需求：在不开启deep的情况下，监听对象的某个属性的变化，而且只有该值发送变化后，才执行回调函数
+
+```javascript
+const obj = ref({
+   name: 'why',
+   age: 18
+})
+watch(
+   () => obj.value.age,
+   (newValue, oldValue) => {},
+   { immediate: true, deep: true }
+)
+```
+
+### 组合式API - 生命周期函数
+
+#### vue3的生命周期API （选项式 vs 组合式）
+
+![vue3生命周期API](./img/屏幕截图%202025-05-01%20111252.png)
+
+### 组合式API - 父子通信
+
+#### 组合式API下的 父传子
+
+基本思想：
+
+1. 父组件给**子组件绑定属性**
+2. 子组件内部通过**props 接收父组件传递的属性**
