@@ -996,6 +996,8 @@ mapActions 辅助函数仅仅是将 store 中的 actions 映射到局部方法 m
 
 ## Vue3 - day1
 
+[Vue3](https://cn.vuejs.org/)
+
 ### 为什么要学Vue3
 
 1. Vue3 已经成为了默认版本
@@ -1149,3 +1151,108 @@ watch(
 
 1. 父组件给**子组件绑定属性**
 2. 子组件内部通过**props 接收父组件传递的属性**
+
+注意：
+
+由于子组件写了setup函数，所以无法直接配置props选项，所以需要借助**编译器宏函数**来接收数值。
+
+```javascript
+const props = defineProps({
+   car: String,
+})
+```
+
+对于props传递过来的数据，模板中可以直接使用
+
+##### defineProps
+
+defineProps原理：就是编译阶段的一个标识，实际编译器解析时，遇到后会进行编译转换。
+
+#### 组合式API下的 子传父
+
+基本思想：
+
+1. 父组件中给子组件标签通过@绑定事件
+2. 子组件内部通过emit触发事件（编译器宏），并把数据传递给父组件
+
+```javascript
+const emit = defineEmits(['add'])
+
+const sendData = () => {
+   emit('add', '传给父组件的数据')
+}
+```
+
+### 组合式API - 模板引用
+
+#### 模板应用的概念
+
+通过 ref标识 获取真实的 dom对象 或者 组件实例
+
+#### 如何使用（以获取DOM为例）
+
+1. 通过 ref函数生成一个ref对象
+2. 通过 ref标识绑定ref对象到标签
+
+获取模板引用的时机是在`onMonted`后
+
+##### defineExpose()
+
+默认情况下在`<script setup>`语法糖下组件内部的属性和方法是不开放给父组件使用的，
+
+可以通过defineExpose()来指定暴露组件内部的属性和方法
+
+### 组合式API - provide / inject
+
+#### 作用和场景
+
+顶层组件向任意的底层组件传递数据和方法，实现跨层组件通信
+
+#### 跨层传递普通数据
+
+1. 顶层组件通过provide()方法向底层组件传递数据
+2. 底层组件通过inject()方法接收顶层组件传递的数据
+
+如果是响应式数据，需要通过ref函数进行包裹
+
+#### 跨层传递方法
+
+1. 顶层组件可以向底层组件传递方法
+2. 底层组件通过inject()方法接收顶层组件**传递的方法修改顶层组件的数据**
+
+### Vue3.3新特性 - defineOptions
+
+在Vue3.3中，新增了一个defineOptions函数，用来定义组件的选项，包括name、components、directives等。
+
+避免一个vue文件中写了多个`<script></script>`的情况
+
+### Vue3.3新特性 - defineModel
+
+实验性质语法 - 简化v-model语法
+
+## day2
+
+### Pinia 快速入门
+
+[Pinia官方文档](https://pinia.vuejs.org/zh/)
+
+#### 什么是 Pinia
+
+Pinia 是一个用于 Vue 的状态管理库，它提供了一种更简洁、更易维护的状态管理方式，相比于 Vuex，Pinia 更加轻量级，并且具有更好的性能。（是Vuex的替代品）
+
+1. 提供了更简单的API
+2. 提供符合，组合式风格的API
+3. 去掉了modules概念，每一store都是一个独立的模块
+4. 配合TypeScript更加友好，提供可靠的类型推断
+
+#### [定义Store](https://pinia.vuejs.org/zh/core-concepts/)
+
+#### [State](https://pinia.vuejs.org/zh/core-concepts/state.html)
+
+#### [Getter]([State](https://pinia.vuejs.org/zh/core-concepts/state.html))
+
+#### [Action](https://pinia.vuejs.org/zh/core-concepts/actions.html)
+
+#### [持久化](https://prazdevs.github.io/pinia-plugin-persistedstate/zh/guide/why.html)
+
+### Vue3案例 - 大事件管理系统
