@@ -2,7 +2,7 @@
 
 [尚硅谷教程](https://www.bilibili.com/video/BV1YT4y1H7YM)
 
-## Java入门
+## 模块一 Java入门
 
 1. 会常用的DOS命令
 2. 会按照Java的运行环境（jdk）
@@ -74,13 +74,13 @@ java不太适合复杂的开发
 
 软件一般是使用某种程序设计语言实现的
 
-## Java入门前言
+## 模块二 Java入门前言
 
 ### 1. 字节
 
 ### 2. 常用的dos命令
 
-## Java环境
+## 模块三 Java环境
 
 ### 1. jvm和跨平台
 
@@ -100,7 +100,7 @@ jdk：java开发包，java开发工具包，java开发环境
 
 jre：java运行时环境
 
-## Java入门程序
+## 模块四 Java入门程序
 
 ```java
 public class Main {
@@ -255,3 +255,257 @@ module下面的子目录称为包（package）
 如果满足，则实现 : 左边，否则实现右边
 
 ## 流程控制语句
+
+### Scanner键盘录入
+
+java定义好的一个类
+
+用来接收键盘录入的数据
+
+#### 使用 Scanner
+
+1. 导包：通过导包的方式找到要使用的类 - 类上引入
+2. 创建对象
+3. 调用方法
+
+```java
+package cn.foreveryang.scanner;
+import java.util.Scanner;
+
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextInt();
+    }
+}
+```
+
+##### nextLine 和 next 的区别
+
+next - 遇到空格或回车就结束了
+
+nextLine - 遇到回车才结束
+
+### random随机数
+
+1. 概述：java自带的一个类
+2. 用途：产生一个随机整数
+
+### switch语句
+
+#### 1. switch基本使用
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int choice = scan.nextInt();
+        switch (choice) {
+            case 1:
+                System.out.println("hhh");
+                break;
+            case 2:
+                System.out.println("xxx");
+                break;
+            case 3:
+                System.out.println("yyy");
+                break;
+            case 4:
+                System.out.println("zzz");
+                break;
+            default:
+                System.out.println("hh");
+                break;
+        }
+    }
+}
+```
+
+switch 能够匹配的数据类型有：
+
+byte、short、int、char、String、enum，不能匹配浮点数（不精准）
+
+### if语句
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int day = scan.nextInt();
+        if (day == 2) {
+            System.out.println("Tuesday");
+        }
+        else if (day == 3) {
+            System.out.println("Wednesday");
+        }
+        else {
+            System.out.println("Other");
+        }
+    }
+}
+```
+
+### for循环
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int i = 10;
+        for (int j = 0; j < i; j++) {
+            System.out.println("我爱Python");
+        }
+    }
+}
+```
+
+### while循环
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int i = 10;
+        int j = 0;
+        while (j < i) {
+            System.out.println("我爱Python");
+            j++;
+        }
+    }
+}
+```
+
+### do...while循环
+
+先do，再循环
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int i = 10;
+        int j = 0;
+        do {
+            System.out.println("我爱Python");
+            j++;
+        } while (j < i);
+    }
+}
+```
+
+### break和continue
+
+#### break
+
+直接跳出循环
+
+#### continue
+
+跳出当前循环，继续下一次循环
+
+## 模块五 数组
+
+### 数组的定义
+
+数组概述：数组本身是一个容器，数组本身属于引用数据类型
+
+1. 动态初始化：只指定了长度
+2. 静态初始化：给了数据
+
+```java
+// 动态初始化
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int i[] = new int[10];
+        int[] o = new int[10];
+    }
+}
+```
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int i[] = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] o = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int[] h ={1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // 推荐使用
+    }
+}
+```
+
+### 数组的操作
+
+#### 获取数组的长度
+
+`数组名.length`
+
+length是数组的一个属性，不是方法，所以不用带小括号
+
+#### 数组的索引
+
+元素在数组中的位置，索引从0开始
+
+#### 数组存储元素
+
+`数组名[索引] = 元素值`
+
+#### 数组获取元素
+
+`数组名[索引]`
+
+1. 直接输出数组名，会输出数组的地址
+
+#### 数组遍历元素
+
+使用 for 循环，遍历数组中的所有元素。
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int[] h ={1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        for (int j : h) {
+            System.out.println(j);
+        }
+    }
+}
+```
+
+#### 数组常见异常
+
+1. ArrayIndexOutOfBoundsException - 数组索引越界异常
+2. NullPointerException - 空指针异常
+
+### 数组的高级操作
+
+#### 数组复制
+
+使用 for 循环，复制数组中的元素。
+
+#### 数组扩容
+
+申请一个新的比原数组空间大的数组，将原数组中的元素复制过去。
+
+### 内存图
+
+在java的世界中，将内存划分成了五块
+
+1. stack  - 栈
+   - 主要运行方法，方法的运行都会进栈内存运行，运行完毕之后，需要“弹栈”，释放内存。
+2. heap   - 堆
+   - 保存的是对象，数组，每new一次，都会在堆内存中开辟空间，并为这个空间分配一个地址值。
+   - 堆内存中的元素，都有其默认值。
+3. method area - 方法区
+   - 代码的“预备区”，记录了类的信息及其方法的信息。
+   - 方法区中，主要保存class文件及其中的信息。
+4. native method stack - 本地方法栈
+   - 本地方法可以理解为堆对java功能的扩充。
+   - 很多功能，是java语言实现不了的，就需要依靠本地方法。
+5. pc register - 寄存器
+
+### 二维数组
+
+```java
+public class Demon01Scanner {
+    public static void main(String[] args) {
+        int[][] i = new int[10][5];
+    }
+}
+```
+
+## 模块六 方法
