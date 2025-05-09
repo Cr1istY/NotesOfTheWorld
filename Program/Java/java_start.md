@@ -693,3 +693,105 @@ public class hello {
 ### 数组常用算法
 
 #### 1. 数组翻转
+
+```java
+public class Test01 {
+    public static void main(String[] args) {
+        int[] a = new int[10];
+        for (int i = 0; i < a.length; i++) {
+            a[i] = i;
+        }
+        for (int j : a) {
+            System.out.print(j + "  ");
+        }
+        int min = 0;
+        int max = a.length - 1;
+        while (min <= max) {
+            int temp = a[min];
+            a[min] = a[max];
+            a[max] = temp;
+            min++;
+            max--;
+        }
+        System.out.println(" ");
+        for (int j : a) {
+            System.out.print(j + "  ");
+        }
+    }
+}
+```
+
+#### 2. 冒泡排序
+
+```java
+    public static void maoPao(int[] a) {
+        for (int i = 0; i < a.length - 1; i++) {
+            for (int j = 0; j < a.length - 1 - i; j++) {
+                if (a[j] > a[j + 1]) {
+                    int temp = a[j];
+                    a[j] = a[j + 1];
+                    a[j + 1] = temp;
+                }
+            }
+        }
+        for (int j : a) {
+            System.out.print(j + "  ");
+        }
+    }
+```
+
+#### 3. 二分查找
+
+```java
+    public static void binarySearch(int[] a, int target) {
+        int min = 0;
+        int max = a.length - 1;
+        while (min <= max) {
+            int mid = (min + max) / 2;
+            if (a[mid] == target) {
+                System.out.println("第 " + mid + " 位");
+                return;
+            }
+            else if (a[mid] < target) {
+                min = mid + 1;
+                continue;
+            }
+            else if (a[mid] > target) {
+                max = mid - 1;
+                continue;
+            }
+        }
+    }
+```
+
+### 对象数组
+
+数组可以用来存储对象
+
+此时，数组中保存的是对象的地址，而不是对象的值
+
+### 方法参数
+
+#### 基本数据类型与引用数据类型
+
+基本数据类型：四类八种
+
+其他都属于引用数据类型
+
+#### 基本数据类型作为方法参数传递
+
+如果要修改基本数据类型的值，则必须使用引用数据类型
+
+类似C语言中的指针
+
+#### 引用数据类型作为方法参数传递
+
+引用数据类型作方法参数传递时
+
+传递的是对象的地址
+
+#### 命令行参数
+
+给main方法传递参数
+
+## 案例 - 学生管理系统
