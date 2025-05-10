@@ -795,3 +795,85 @@ public class Test01 {
 给main方法传递参数
 
 ## 案例 - 学生管理系统
+
+### 学生类
+
+```java
+public class Student {
+    private String name;
+    private int age;
+    private int grade;
+    Student(String name, int age, int grade) {
+        this.name = name;
+        this.age = age;
+        this.grade = grade;
+    }
+    Student() {}
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public int getGrade() {
+        return grade;
+    }
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+}
+```
+
+---
+
+## 下部
+
+## 模块十 继承
+
+重点：
+
+1. 知道继承的好处
+2. 会使用继承
+3. 知道继承之后成员变量以及成员方法的访问
+4. 方法的重写以及使用场景
+5. 会使用this关键字调用当前对象
+6. 使用super关键字调用父类对象
+7. 会定义抽象方法和抽象类
+8. 会重写抽象方法
+
+### 继承
+
+1. 定义一个父类，在其中定义重复性的代码
+2. 定义一个子类，继承父类，并使用父类中非私有成员
+
+```java
+public class Teacher extends Employee{}
+```
+
+Teacher类继承了Employee类
+
+子类不能使用父类的私有成员
+
+#### 方法的重写
+
+如果子类中有和父类相同的方法，则子类方法会覆盖父类方法（使用@Override注解查看）
+
+注意事项：
+
+1. 子类重写父类方法后，权限必须要保证大于等于父类权限（权限指的是访问权限）
+   - public > protected > default > private
+2. 子类重写父类方法，方法名和参数列表要一致
+3. 私有方法不能被重写，构造方法不能被重写，静态方法不能被重写
+4. 子类重写父类方法之后，返回值类型应该是父类方法返回值类型的子类类型
+
+##### 使用场景
+
+功能的升级改造
+
+### super和this
