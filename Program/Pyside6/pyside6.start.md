@@ -109,3 +109,124 @@ if __name__ == '__main__':
 可以把窗口置顶，适用于弹窗（模态）
 
 ## 信号与槽
+
+在Pyside6中，信号与槽是两种特殊的函数，用于实现程序间的通信。
+
+信号是主动发出的，而槽函数是被动接收的。
+
+以下程序是信号与槽的基本使用
+
+```python
+import sys
+
+from PySide6.QtWidgets import QApplication, QWidget
+
+from test01 import Ui_Form
+
+
+class MyWidow(QWidget, Ui_Form):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.result = ''
+
+        self.bind()
+    def bind(self):
+        self.pushButton_0.clicked.connect(lambda: self.addNumber('0'))
+        self.pushButton_1.clicked.connect(lambda: self.addNumber('1'))
+        self.pushButton_2.clicked.connect(lambda: self.addNumber('2'))
+        self.pushButton_3.clicked.connect(lambda: self.addNumber('3'))
+        self.pushButton_4.clicked.connect(lambda: self.addNumber('4'))
+        self.pushButton_5.clicked.connect(lambda: self.addNumber('5'))
+        self.pushButton_6.clicked.connect(lambda: self.addNumber('6'))
+        self.pushButton_7.clicked.connect(lambda: self.addNumber('7'))
+        self.pushButton_8.clicked.connect(lambda: self.addNumber('8'))
+        self.pushButton_9.clicked.connect(lambda: self.addNumber('9'))
+        self.pushButton_plus.clicked.connect(lambda: self.addNumber('+'))
+        self.pushButton_chu.clicked.connect(lambda: self.addNumber('/'))
+        self.pushButton_jian.clicked.connect(lambda: self.addNumber('-'))
+        self.pushButton_cheng.clicked.connect(lambda: self.addNumber('*'))
+        self.pushButton_enter.clicked.connect(self.equal)
+
+    def addNumber(self, number):
+        self.lineEdit.clear()
+        self.result += number
+        self.lineEdit.setText(self.result)
+
+    def equal(self):
+        self.numberResult = eval(self.result)
+        self.lineEdit.setText(str(self.numberResult))
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MyWidow()
+    window.show()
+    app.exec()
+```
+
+## 常用控件-下拉框-多选框
+
+限制用户输入
+
+### 下拉框
+
+QComboBox
+
+### 多选框
+
+QCheckBox
+
+### 进制转换器
+
+```python
+import sys
+
+from PySide6.QtWidgets import QApplication, QWidget
+from jinzhi import Ui_Form
+
+class MyWidow(QWidget, Ui_Form):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+        self.lengthVar = {'米': 100, '千米': 100000, '厘米': 1}
+        self.weightVar = {'克': 1, '千克': 1000, '斤': 500}
+        self.TypeDict = {'长度': self.lengthVar, '重量': self.weightVar}
+        self.comboBox.addItems(self.TypeDict.keys())
+        self.comboBox_2.addItems(self.lengthVar.keys())
+        self.comboBox_3.addItems(self.lengthVar.keys())
+        self.bind()
+
+    def bind(self):
+        self.comboBox.currentTextChanged.connect(self.typeChange)
+        self.pushButton.clicked.connect(self.cal)
+
+    def cal(self):
+        big_type = self.comboBox.currentText()
+
+        value = self.lineEdit.text()
+        if value == '':
+            return
+        current_type = self.comboBox_2.currentText()
+        trans_type = self.comboBox_3.currentText()
+
+        standardization = float(value) * self.TypeDict[big_type][trans_type]
+        result = self.TypeDict[big_type][current_type] / standardization
+
+        self.label.setText(f'{value} {current_type} =')
+        self.label_2.setText(f'{result} {trans_type}')
+        self.lineEdit_2.setText(str(result))
+
+    def typeChange(self, text):
+        self.comboBox_2.clear()
+        self.comboBox_3.clear()
+        self.comboBox_2.addItems(self.TypeDict[text].keys())
+        self.comboBox_3.addItems(self.TypeDict[text].keys())
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MyWidow()
+    window.show()
+    app.exec()
+```
