@@ -230,3 +230,23 @@ if __name__ == '__main__':
     window.show()
     app.exec()
 ```
+
+## 常用控件-单选框-文本框
+
+### 单选框-QRadionButton
+
+### 编辑框QEditText与纯文本编辑框QEditPlainText
+
+### 项目，在线翻译
+
+### 常用控件-滑条
+
+## 常见布局以及布局的作用
+
+## 内置方便控件
+
+### 信息对话框-QMessageBox
+
+模态：Modal
+
+用于创建弹窗
