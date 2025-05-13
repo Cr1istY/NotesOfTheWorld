@@ -1256,3 +1256,187 @@ new 接口/抽象类(){
 }
 对象名.重写方法();
 ```
+
+## 模块十三 - 异常_Object
+
+### API文档
+
+API：Application Programming Interface，**应用程序编程接口**，就是接口，就是定义了接口的类，就是接口类
+
+说白了，API就是定义出来的类、接口，以及其中的方法
+
+API文档，就是方便使用者使用的文档，是程序员的“字典”
+
+### 异常
+
+#### 异常的介绍
+
+代码出现了不正常的现象，就叫做异常
+
+Error ：错误 代码出现了重大错误，需要重写
+
+Exception ：异常 代码出现了异常，可以处理，也可以不处理
+
+1. 编译时异常：编译时出现的错误，编译器会提醒，但是不会导致程序无法运行
+2. 运行时异常：运行时出现的错误，编译器不会提醒，但是会终止程序运行，导致程序崩溃
+
+当虚拟机运行时，如果代码中出现了异常，那么虚拟机会将异常对象创建出来，并交给JVM处理
+
+最后，抛出异常信息，终止程序
+
+#### 创建异常对象
+
+创建异常对象，只是为了日后学习如何处理异常
+
+关键字：`throw`
+
+```java
+throw new 异常类();
+```
+
+#### 处理异常
+
+使用关键字：`throws`
+
+##### 异常处理方式一 throws
+
+```java
+throw 异常;
+```
+
+```java
+public class Demo01Throws {
+    public static void main(String[] args) throws Exception {
+        System.out.println(10/0);
+        System.out.println("程序继续执行");
+    }
+}
+```
+
+1. 格式：在方法参数和方法体之间位置写上
+2. 处理异常，将异常往上抛
+
+如果`throws`抛出多个异常的时候呈父子类关系，可以直接抛出父类（直接`throws Exception`）
+
+##### 异常处理方式二 try-catch-finally
+
+```java
+try{
+    可能出现异常的代码
+}catch(异常类名 e){
+    处理有异常的代码 ->  将来会将异常信息保存到日志文件中
+}
+```
+
+e是自定义的对象名
+
+日志文件，用来保存使用程序的错误信息以及使用信息
+
+##### 多个catch
+
+对于不同的异常，使用不同的catch处理
+
+把异常类名换成不同的异常类名，实现多个catch以应对不同的异常情况
+
+#### finally关键字
+
+代表不管是否触发异常，都会执行的代码块
+
+**即便return也会执行finally**，除非有system.exit(0)
+
+##### finally使用场景
+
+1. 关闭资源
+2. 释放资源，如果对象没有用了，GC会自动回收，而有一些对象是不能被GC回收的，比如数据库连接，文件流等，所以需要我们自己做释放资源操作
+
+#### 抛异常时需要注意的事项
+
+1. 父类中的方法抛了异常，子类可抛可不抛
+2. 父类中的方法没有抛异常，子类不能抛
+
+重写尽量形式和父类保持一致
+
+#### try-catch 和 throws 的时机
+
+1. 如果处理异常后，还想让虚拟机继续运行，那么使用try-catch
+2. 如果方法之间是递进关系，可以先throws，再在最后进行try-catch
+
+#### 自定义异常
+
+定义一个类，继承自Exception或者RuntimeException，重写构造方法即可
+
+如果继承Exception，那么这个类就是编译时异常
+
+如果继承RuntimeException，那么这个类就是运行时异常
+
+##### 打印异常信息的三个方法
+
+三者皆出自Throwable类
+
+1. String toString()：获取异常简单信息
+2. String getMessage()：获取异常信息
+3. void printStackTrace()：获取异常信息，同时将异常信息输出到控制台
+
+### Object类
+
+所有类的根类，是java中的祖宗类
+
+#### Object toString()
+
+返回该对象的字符串表示形式
+
+> getClass().getName() + '@' + Integer.toHexString(hashCode())
+
+注意：
+
+1. 如果没有重写toString方法，那么直接输出对象名时，默认调用的是toString方法，返回的是内存地址
+2. 如果重写了toString方法，返回的是对象的被重写的内容
+
+#### Object equals
+
+比较的是两个对象的地址
+
+```java
+public boolean equals(Object obj) {
+    return (this == obj);
+}
+```
+
+对于 == , 如果是基本数据类型，那么比较的是值，如果是引用数据类型，那么比较的是地址
+
+注意：
+
+1. 如果没有重写Object中的equals方法，那么默认调用的是Object中的equals方法，比较的是地址
+2. 如果重写了Object中的equals方法，那么比较的是对象中的内容
+
+重写equals方法需要注意。
+
+#### Object clone
+
+复制一个属性值一样的新对象
+
+被克隆的对象，必须实现Cloneable接口，然后重写克隆方法
+
+### 经典接口
+
+#### 比较大小：java.lang.Comparable接口
+
+引用数据类型是不能比较大小的，为了解决这个问题，java给所有引用数据类型的大小比较，指定了一个标准，就是Comparable接口
+
+```java
+package java.lang;
+
+public interface Comparable {
+    int compareTo(Object o);
+}
+```
+
+第一步：哪个类的对象要比较大小，哪个类就实现java.lang.Comparable接口，并重写方法
+
+第二步：对象比较大小时，通过对象调用compareTo方法，根据方法的返回值决定谁大谁小。
+
+- this对象，（调用compareTo方法的对象）减 指定对象（传入compareTo()的参数对象）大于0，返回正整数
+- 小于0，返回负整数
+- 等于0，返回0
+
+## 模块十四 - API
