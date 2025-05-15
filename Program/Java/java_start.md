@@ -1440,3 +1440,120 @@ public interface Comparable {
 - 等于0，返回0
 
 ## 模块十四 - API
+
+### String字符串
+
+#### String概述
+
+1. String类是一个字符序列，用于表示和操作字符串
+2. 特点：
+   1. Java中所有的字符串都是以String实例化而来的对象。（凡是带双引号的都是String类的对象）
+   2. 字符串是个常量，他们的值创建后就不能更改。之后，对字符串的增删操作，实际上是创建了一个新的字符串对象，然后将新的字符串对象赋给原来的字符串变量。
+   3. String对象是不可变的，所以可以被共享。
+
+#### String原理
+
+1. jdk8：String是一个被final修饰的char数组。
+2. jdk9开始：是一个被final修饰的byte数组。
+
+一个char占两个字节，而一个byte占一个字节
+
+优化了内存
+
+#### String的创建
+
+```java
+String();
+String(String s)
+String(char[] value)
+String(byte[] bytes)
+```
+
+简化形式：`String s = "abc";`
+
+#### String面试题说明
+
+```java
+String s1 = "abc";
+String s2 = "abc";
+String s3 = new String("abc");
+System.out.println(s1 == s2); // true
+System.out.println(s1 == s3); // false
+System.out.println(s2 == s3); // false
+```
+
+引用数据类型，比较的是地址，s1和s2是共享地址的，所以s1和s2比较时，返回true
+
+1. String s1 = new String("abc"); 共有两个对象，一个是new本身，一个是"abc'
+2. String s2 = new String("abc"); 共创建了一个或两个，要看abc有没有提前创建出来
+
+```java
+String s1 = "hello";
+String s2 = "world";
+String s3 = "helloworld"
+String s4 = "hello" + "world";
+String s5 = s1 + "world";
+String s6 = s1 + s2;
+
+System.out.println(s3 == s4); // true
+System.out.println(s3 == s5); // false
+System.out.println(s3 == s6); // false
+```
+
+#### String的常用方法
+
+1. 判断方法，`boolean equals(String s)`|`boolean equalsIgnoreCase(String s)`
+    - 实际开发中，为了防止出现空指针，一般会把**确切的值**作为对象，然后调用方法。
+    - 或者使用`Objects.equals(String s1, String s2)`，该方法会自动判断空指针。
+2. 获取功能：
+   1. 获取字符串长度，调用`s.length()`。返回`int`
+   2. 字符串拼接，调用`s.concat(String s)`。返回`String`
+   3. 根据索引获取对应字符，调用`s.charAt(int index)`。返回`char`
+   4. 获取指定字符串在大字符串中第一次出现的位置，调用`s.indexOf(String s)`。返回`int`
+   5. 截取字符串，从指定索引开始截取到末尾，调用`s.substring(int index)`。返回`String`
+   6. 截取字符串，从指定索引开始截取到指定索引结束，调用`s.substring(int start, int end)`。返回`String`（含头不含尾）
+3. 转换功能：
+   1. 将字符串转换为字符数组，调用`s.toCharArray()`。返回`char[]`
+   2. 将字符串转换为字节数组，调用`s.getBytes()`。返回`byte[]`
+   3. 替换字符，调用`s.replace(char oldChar, char newChar)`。返回`String`
+4. 分割功能：
+   1. `String[] split(String regex)`；regex表示正则表达式，返回`String[]`
+5. 其他方法：
+   1. `boolean isEmpty()`：判断字符串是否为空，返回`boolean`
+   2. `String toLowerCase()`：将字符串转换为小写，返回`String`
+   3. `String toUpperCase()`：将字符串转换为大写，返回`String`
+   4. `boolean contains(String s)`：判断字符串是否包含指定字符串，返回`boolean`
+   5. `boolean endsWith(String s)`：判断字符串是否以指定字符串结束，返回`boolean`
+   6. `boolean startsWith(String s)`：判断字符串是否以指定字符串开始，返回`boolean`
+   7. `String trim()`：去除字符串两端的空格，返回`String`
+
+### StringBuilder
+
+#### stringBuilder概述
+
+一个可变的字符序列，此类提供了一个与StringBuffer兼容的API，但性能更好，但不保证同步（线程不安全）
+
+作用：主要用于拼接字符串
+
+为什么要使用？
+
+1. String拼接字符有缺点：会不断产生新字符串对象。
+2. StringBuilder自带一个缓存区，字符串可以改变。拼接字符串后，都会在缓存区中保存，不会产生新对象。
+
+#### StringBuilder的特点
+
+1. 底部自带缓存区，此缓存区是没有被final修饰的byte数组，默认长度为15
+2. 如果超出了数组长度，数组会自动扩容，创建一个新长度的数组，然后将新数组的地址值重新赋值给老数组
+3. 默认每次扩容老数组的2倍+2，如果超出了这个数组，会按照实际扩容为主。
+
+#### StringBuilder的使用
+
+1. 创建对象：`StringBuilder s = new StringBuilder()`
+2. 常用方法：
+   1. append(String s)：添加字符串，返回`StringBuilder`（是自己）
+   2. reverse()：反转字符串，返回`StringBuilder`（是自己）
+   3. toString()：将`StringBuilder`转换为`String`，返回`String`
+
+## 模块十五 - API
+
+
