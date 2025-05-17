@@ -1556,4 +1556,305 @@ System.out.println(s3 == s6); // false
 
 ## 模块十五 - API
 
+### 数学相关类 - Math
+
+1. 数学工具类
+2. 主要用于数学运算
+3. 特点
+   1. 构造方法私有
+   2. 方法都是静态的
+4. 使用：`Math.abs(int a)`
+
+#### Math常用方法
+
+1. int abs(int a)：绝对值
+2. double ceill(double a)：向上取整
+3. double floor(double a)：向下取整
+4. long round(double a)：四舍五入
+5. int max(int a, int b)：取最大值
+6. int min(int a, int b)：取最小值
+
+### BigInteger类
+
+1. BigInteger类，用于处理大整数（大于long类型的整数，一般称之为**对象**）
+2. 构造：BigInteger(String s) - 参数的格式必须为数字形式
+
+#### BigInteger常用方法
+
+1. BigInteger add(BigInteger b)：加法
+2. BigInteger subtract(BigInteger b)：减法
+3. BigInteger multiply(BigInteger b)：乘法
+4. BigInteger divide(BigInteger b)：除法
+
+BigInteger有上限，上限是内存扛不住的，所以，我们可以认为BigInteger无上限。
+
+### BigDecimal类
+
+直接使用float或者double，会有精度丢失，所以，我们使用BigDecimal类。
+
+作用：主要用来解决精度损失问题。
+
+构造：BigDecimal(String s)，s表示数字字符串
+
+#### BigDecimal常用方法
+
+1. BigDecimal valueOf(double d)：将double类型的数据转换为BigDecimal对象
+2. 其他方法和BigInteger大致一样
+
+#### 过时方法解决
+
+过时的方法可以使用，但是不建议使用。（底层会有注解@Deprecated）
+
+### 日期相关类 - Date
+
+表示特定的瞬间，精确到毫秒。
+
+1000 ms = 1 s
+
+时间戳原点：1970年1月1日0时0分0秒0毫秒（UNIX系统起始时间、格林威治时间、位于0度时区）
+
+一个时区相差15度，时间相差一个小时。
+
+北京：东八区、东经116
+
+#### Date的使用
+
+Date类有构造方法，但是一般使用Date()，获取当前时间。
+
+### Calendar日历类
+
+日历类，是一个抽象类，不能直接创建对象。
+
+月份：0表示1月，11表示12月。
+
+#### 需要知道的字段
+
+YEAR：年
+
+MOUTH：月
+
+DAY_OF_MONTH：日
+
+等。
+
+### SimpleDateFormat日期格式化类
+
+按照自己想要的格式，将日期对象转换成字符串。
+
+构造：SimpleDateFormat(String pattern)
+
+pattern代表自己制定的日期格式：字母不能改变，但是中间的连接符可以改变。
+
+### jdk8新日期类
+
+#### LocalDate 本地日期
+
+是一个不可变的日期对象，表示日期，通常为年月日
+
+#### Period和Duration类
+
+period用于计算时间的差值
+
+duration也用于计算时间差
+
+#### DataTimeFormatter日期格式化类
+
+### 工具类 System系统相关类
+
+1. 概述：系统相关类，是一个工具类
+2. 特点：
+   1. 构造私有，不能利用构造方法new对象
+   2. 方法都是静态的
+3. 使用：System. 类名直接调用
+
+#### System方法
+
+1. static long currentTimeMillis()：获取当前时间毫秒值，返回long类型
+2. static void exit(int status)：退出程序，参数为状态码，返回void
+3. static void arrcopy(Object src, int srcPos, Object dest, int destPos, int length)：复制数组，返回T[]
+
+### Arrays数组工具类
+
+1. 概述：数组工具类，是一个工具类
+2. 特点：
+   1. 构造私有，不能利用构造方法new对象
+   2. 方法都是静态的
+
+#### Arrays方法
+
+1. static void sort(int[] a)：对数组进行排序，返回void
+2. static String toString(int[] a)：将数组转换为字符串，返回String
+3. static int binarySearch(int[] a, int key)：二分查找，返回int
+4. static void copyOf(int[] original, int newLength)：数组扩容，返回int[]
+
+### 包装类
+
+1. 概述：包装类，将基本数据类型转换为对象，对象可以调用方法。
+
+我们需要将基本类型转成包装类，而让基本类型有了类的特性，能够调用其中的方法。
+
+#### Integer类
+
+Integer是int类型的包装类
+
+不推荐使用了，但是还得学
+
+#### 装箱与拆箱
+
+1. 装箱：将基本类型转化成对应的包装类
+2. 拆箱：将包装类转化成对应的基本类型
+
+使用：Integer i = 5;
+
+自动进行拆箱和装箱。
+
+## 模块十六 - 多线程
+
+### 多线程基本了解
+
+#### 线程和进程
+
+进程：在内存中执行的应用程序叫进程
+
+线程：进程中最小的执行单元，负责当前进程中程序的运行
+
+一个进程中至少要有一个线程，如果一个进程中有多个线程，那么这个进程就是多线程的。
+
+简单理解：一个功能需要一条线程。
+
+使用场景：软件中的耗时操作，所有的聊天软件，后台服务器
+
+一个线程可以干一件事，同时就可以做多件事情，提高了CPU的利用率
+
+#### 并发和并行
+
+并行：在同一时刻，有多个执行在多个CPU上（很多人做很多事）
+
+并发：在同一个时刻，有多个指令在单个CPU上，交替执行（一个人做多个事）
+
+单核CPU通过高速切换执行的方式，造成了同时执行多个指令的效果。
+
+#### CPU调度
+
+1. 分时调度：所有线程轮流获取CPU的使用权，并且平均分配每个线程占用CPU的时间片。
+2. 抢占式调度：多个线程轮流抢占获取CPU的使用权，并且优先级高的线程优先获取CPU的使用权。
+
+java程序，是抢占式调度。
+
+#### 主线程
+
+CPU和内存之间，专门为main方法开辟和服务的线程。
+
+### 创建线程方式
+
+#### 第一种方式 - 继承 Thread类
+
+1. 定义一个类，继承Thread
+2. 重写run方法，在run方法中设置线程任务（所谓的线程任务就是线程要完成的具体代码）
+3. 去创建自定义线程类的对象
+4. 调用Thread中的start方法，开启线程，jvm自动调用run方法
+
+```java
+package cn.foreveryang.thread;
+
+public class Test {
+    public static void main(String[] args) {
+        // 创建线程对象
+        MyThread t1 = new MyThread();
+        t1.start();
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Main ... " + i);
+        }
+    }
+}
+```
+
+```java
+package cn.foreveryang.thread;
+
+public class MyThread extends Thread{
+    @Override
+    public void run() {
+        for (int i = 0; i < 10; i++) {
+            System.out.println("My Thread ... " + i);
+        }
+    }
+}
+```
+
+#### 多线程原理
+
+每创建一个线程，都会新创建一个线程栈
+
+同一个线程对象不能连续使用start方法，如果想要再新建一个线程，需要创建新的线程对象
+
+#### Thread中的方法
+
+void start()：启动线程，调用当前线程的run方法
+
+void run()：线程任务，线程要完成的具体代码（需要重写）
+
+String getName()：获取线程名称
+
+void setName(String name)：设置线程名称
+
+static Thread currentThread()：获取当前线程对象
+
+static void sleep(long millis)：让当前线程休眠，单位毫秒
+
+在重写的run方法中有异常只能try，不能throws
+
+因为继承的Thread类中run方法没有抛出异常，所以不能throws
+
+#### Thread类中的其他方法
+
+void setPriority(int newPriority)：设置线程优先级，1-10
+
+优先级越高，越容易使用CPU
+
+int getPriority()：获取线程优先级
+
+void setDaemon(boolean daemon)：设置线程为守护线程，默认为用户线程
+
+static void yield()：让当前线程释放CPU，让CPU去执行其他线程
+
+void join()：插入线程或插队线程
+
+##### 线程优先级
+
+Thread.MIN_PRIORITY：1
+
+Thread.NORM_PRIORITY：5
+
+Thread.MAX_PRIORITY：10
+
+#### 守护线程
+
+当线程为守护线程时，所有用户线程执行完毕，守护线程也会执行完毕
+
+使用场景：QQ聊天时，
+
+#### 礼让线程
+
+让两个线程尽可能交替运行。
+
+注意：只是尽可能的平衡，不是绝对的交替
+
+#### 插入线程
+
+### 创建线程方式二 - 实现Runnable接口
+
+1. 创建一个类，实现Runnable接口
+2. 重写run方法，设置线程任务
+3. 利用Thread的构造方法，Thread(Runnable target)，创建Thread对象，将自定义的类的实例作为参数传递
+4. 调用Thread的start方法，开启新线程，执行run方法
+
+### 两种实现多线程的方式区别
+
+1. 继承Thread类：单继承，有局限
+2. 实现Runnable接口：多继承，可以有多个父类
+
+### 创建线程方式三 - 匿名内部类创建多线程
+
 
