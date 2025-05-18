@@ -840,4 +840,228 @@ wait：线程等待，等待的过程中会释放锁，其他线程就有可能�
 
 notify会唤醒正在等待的线程，一次只能唤醒一条等待的线程，如果多条线程正在等待，notify就会随机唤醒一条线程
 
+## 模块十七 - 多线程补充
 
+### 等待唤醒
+
+要求：一个线程生产，一个线程消费，不能连续生产，也不能连续消费
+
+即线程之间的通讯
+
+|方法|说明|
+|:--|:--|
+|void wait()|等待|
+|void notify()|唤醒|
+|void notifyAll()|唤醒所有|
+
+wait和notify方法需要锁对象调用，所以需要用到同步代码块当中，并且是同一个锁对象
+
+#### 等待唤醒案例分析
+
+```java
+package cn.foreveryang.baozipu;
+
+public class BaoZiPu {
+    private int count;
+    private boolean flag;
+
+    public BaoZiPu() {
+        count = 0;
+        flag = false;
+    }
+
+    public BaoZiPu(int count, boolean flag) {
+        this.count = count;
+        this.flag = flag;
+    }
+
+    public void getCount() {
+        System.out.println("消费了---第" + count + "个包子");
+    }
+
+    public void setCount() {
+        count++;
+        System.out.println("生产了---第" + count + "个包子");
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
+}
+
+```
+
+```java
+package cn.foreveryang.baozipu;
+
+public class Consumer implements Runnable {
+    private BaoZiPu baozipu;
+
+    public Consumer(BaoZiPu baozipu) {
+        this.baozipu = baozipu;
+    }
+
+
+    @Override
+    public void run() {
+        while (true) {
+
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            synchronized (baozipu) {
+                // 1. 判断flag是否为true，如果是false，证明没有包子，消费线程等待
+                if (baozipu.isFlag() == false) {
+                    try {
+                        baozipu.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                // 2. 如果flag为true，证明有包子，开始消费
+                baozipu.getCount();
+                // 3. 改变flag为false
+                baozipu.setFlag(false);
+                // 4. 唤醒生产线程
+                baozipu.notify();
+            }
+        }
+    }
+}
+
+```
+
+```java
+package cn.foreveryang.baozipu;
+
+public class Product implements Runnable {
+    private BaoZiPu baozipu;
+
+    public Product(BaoZiPu baozipu) {
+        this.baozipu = baozipu;
+    }
+
+
+    @Override
+    public void run() {
+        while (true) {
+
+            try {
+                Thread.sleep(100L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+             synchronized (baozipu) {
+                 // 1. 判断flag是否为true，如果是true，证明有包子，生产线程等待
+                 if (baozipu.isFlag() == true) {
+                     try {
+                         baozipu.wait();
+                     } catch (InterruptedException e) {
+                         throw new RuntimeException(e);
+                     }
+                 }
+
+                 // 2. 如果flag为false，证明没有包子，开始生产
+                 baozipu.setCount();
+                 // 3. 改变flag为true
+                 baozipu.setFlag(true);
+                 // 4. 唤醒消费线程
+                 baozipu.notify();
+             }
+        }
+    }
+}
+```
+
+```java
+package cn.foreveryang.baozipu;
+
+public class Test {
+    public static void main(String[] args) {
+        BaoZiPu baozipu = new BaoZiPu();
+        Product product = new Product(baozipu);
+        Consumer consumer = new Consumer(baozipu);
+        Thread t1 = new Thread(product);
+        Thread t2 = new Thread(consumer);
+
+        t1.start();
+        t2.start();
+    }
+}
+
+```
+
+#### Lock锁的使用
+
+Lock是一个接口
+
+实现类：ReentrantLock
+
+使用方法：lock获取锁，unlock释放锁
+
+使用多态的方式创建对象`Lock lock = new ReentrantLock();`
+
+syncronized和Lock锁的区别：
+
+1. syncronized是JVM内置的线程同步机制，不管是同步代码块还是同步方法，都需要在结束{}后，释放锁对象
+2. Lock是JDK提供的线程同步机制，是通过两个方法来进行上锁和解锁的，lock()和unlock()，更灵活
+
+#### 实现多线程三 - Callable接口
+
+`Callable<V>`是一个接口
+
+方法：`V call()` - 设置线程任务，类似于run方法
+
+call和run的区别：
+
+1. 相同点：都是设置线程任务，都是需要重写
+2. 不同点：call方法可以抛出异常且有返回值，run方法不可以且没有返回值
+
+##### V 是 泛型
+
+泛型：用于指定我们操作什么类型的数据，<> 中只能写引用数据类型，如果泛型不写，默认为Object
+
+指定泛型是什么类型，重写的call方法，返回的就是什么类型
+
+##### call方法返回值接收
+
+`FutureTask<V>` 实现了`Future<V>`接口
+
+V get() 获取call方法的返回值
+
+### 线程池
+
+线程池用于避免频繁的创建线程和销毁线程，将线程进行频繁使用，提高效率。
+
+#### 线程池的创建
+
+```java
+static ExecutorService newFixedThreadPool(int nThreads)
+```
+
+1. nThreads - 线程池中线程的数量
+2. 返回值 - 返回了线程池，用来管理线程对象
+3. 执行线程任务，ExecutorService中的方法
+   1. `Future<?> submit(Runnable task)` - 提交Runnable任务，返回一个Future对象，可以获取任务执行结果
+   2. `Future<T> submit(Callable<T> task)` - 提交Callable任务，返回一个Future对象，可以获取任务执行结果
+4. submit方法，返回一个Future对象，可以获取任务执行结果，Future是一个接口，用于接收call方法的返回值
+
+### Timer定时器
+
+1. 定时器，使用空参进行构造
+2. 方法：void schedule(TimerTask task, Date firstTime, long delay)
+
+- task - 抽象类，是Runnable的实现类
+- firstTime - 第一次执行时间
+- delay - 间隔时间（使用ms值）
+
+## 模块十八 - 集合
