@@ -1065,3 +1065,445 @@ static ExecutorService newFixedThreadPool(int nThreads)
 - delay - 间隔时间（使用ms值）
 
 ## 模块十八 - 集合
+
+### Collection接口
+
+#### 单列集合框架
+
+集合，是一个长度可变的容器
+
+集合，只能存储引用数据类型，不能存储基本数据类型
+
+分类：
+
+1. 单列集合：一个元素就一个组成部分 list.add(Object o)
+2. 双列集合：一个元素由两个部分组成：key和value map.put(K key, V value)
+
+所有的单列集合都有一个顶级接口，Collection，子接口list、set继承Collection
+
+list接口实现类：ArrayList、LinkedList、Vector
+
+set接口实现类：HashSet、LinkedHashSet、TreeSet
+
+##### ArrayList集合
+
+1. 元素有序
+2. 元素可重复
+3. 有索引
+4. 线程不安全
+5. 底层数据结构是数组
+
+##### LikedList集合
+
+1. 元素有序
+2. 元素可重复
+3. 有索引
+4. 线程不安全
+5. 底层数据结构是双向链表
+
+LinkedList**本质上无索引**，但是java为其提供了很多根据索引操作元素的方法
+
+##### Vector集合
+
+1. 不常用
+2. 元素有序
+3. 元素可重复
+4. 有索引
+5. 线程安全（慢，效率低）
+6. 底层数据结构是数组
+
+##### HashSet集合
+
+1. 元素无序
+2. 元素唯一
+3. 无索引
+4. 线程不安全
+5. 底层数据结构是哈希表
+
+##### LinkedHashSet集合
+
+是HashSet的子类
+
+1. 元素有序
+2. 元素唯一
+3. 无索引
+4. 线程不安全
+5. 底层数据结构是哈希表加双向链表
+
+##### TreeSet集合
+
+1. 可对元素进行排序
+2. 元素唯一
+3. 无索引
+4. 线程不完全
+5. 底层数据结构是红黑树
+
+#### Collection
+
+1. 概述：单列集合的顶级接口
+2. 使用：
+   1. 创建：`Collection<E> c = new 实现类对象<E>();`
+   2. `<E>`是泛型，决定了集合中能存储的数据类型，只能写引用数据类型，不写，默认为Object
+
+### 迭代器
+
+1. 概述：Iterator接口，是一个迭代器，用于遍历集合
+2. 主要作用：遍历集合
+3. 获取：使用Collection中的方法
+
+```java
+ArrayList<String> list = new ArrayList<String>();
+list.add("张三");
+list.add("李四");
+// 获取迭代器对象
+Iterator<String> iterator = list.iterator();
+while (iterator.hasNext()) {
+    String next = iterator.next();
+    System.out.println(next);
+}
+```
+
+注意：next方法在获取时，不要连续使用多次
+
+当迭代器遍历完所有元素后，再使用next方法，会报NoSuchElementException异常
+
+#### 迭代器底层实现
+
+```java
+int cursor; // 下一个元素索引位置
+int lastRet = -1; // 上一个元素索引位置
+```
+
+并发修改异常：
+
+当 elements.modCount != expectedModCount 是，抛出ConcurrentModificationException异常
+
+```java
+if (modCount != expectedModCount) {
+    throw new ConcurrentModificationException();
+} // 修改次数不等于期望修改次数
+```
+
+最终结论：我们调用了add方法，而add方法底层只给modCount++，但是再次调用next方法时，并没有给修改后的modCount重新赋值给expectedModCount
+
+使用迭代器或增强for迭代集合的过程中，不要随意修改集合中的元素
+
+### 数据结构
+
+数据结构是一种具有一定的逻辑关系，在计算机中应用某种存储结构，并且封装了相应操作的数据元素集合。
+
+他包含三方面的内容：逻辑关系、存储关系及操作
+
+#### 栈
+
+#### 队列
+
+#### 数组
+
+#### 链表
+
+#### 树
+
+#### 图
+
+### List接口
+
+1. 是Collection的子接口
+2. 常见的实现类：ArrayList、LinkedList、Vector
+
+#### ArrayList集合的使用和源码分析
+
+1. **概述**
+     * `ArrayList` 是 Java 中一个非常常用的集合类，它位于`java.util`包下。`ArrayList` 实现了`List`接口，采用动态数组的方式存储数据，这意味着它的元素是有序的，并且可以根据需要自动调整大小。
+     * 它允许对元素进行随机访问，通过索引来快速定位元素，这使得在需要频繁访问元素的场景下非常高效。但是，在中间位置插入或者删除元素可能会比较慢，因为这会导致数组中后续元素的移动。
+
+  2. **构造方法**
+     * **无参构造方法**
+       * `ArrayList()`：构造一个初始容量为 10 的空列表。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         ```
+
+     * **带初始容量的构造方法**
+       * `ArrayList(int initialCapacity)`：构造一个具有指定初始容量的空列表。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>(20);
+         ```
+
+     * **从集合构造**
+       * `ArrayList(Collection<? extends E> c)`：构造一个包含指定集合元素的列表，这些元素的顺序是由集合的迭代器所返回的顺序决定的。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> oldList = new ArrayList<>();
+         oldList.add("a");
+         oldList.add("b");
+         ArrayList<String> newList = new ArrayList<>(oldList);
+         ```
+
+  3. **常用方法**
+     * **添加元素**
+       * `boolean add(E e)`：将指定的元素添加到此列表的尾部。返回值是一个布尔值，固定为`true`。因为对于`ArrayList`来说，只要不是固定大小的列表，添加元素操作总是可以成功。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         System.out.println(list); // 输出：[a, b]
+         ```
+
+       * `void add(int index, E element)`：将指定的元素插入此列表中的指定位置。在插入位置及以后的元素都向后移动一个位置。如果指定的位置索引大于等于当前列表的大小，会抛出`IndexOutOfBoundsException`异常。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("c");
+         list.add(1, "b");
+         System.out.println(list); // 输出：[a, b, c]
+         ```
+
+     * **删除元素**
+       * `E remove(int index)`：移除此列表中指定位置的元素，并返回该元素。在指定位置之后的元素都向前移动一个位置。如果索引超出范围，会抛出`IndexOutOfBoundsException`异常。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.add("c");
+         String removedElement = list.remove(1);
+         System.out.println(removedElement); // 输出：b
+         System.out.println(list); // 输出：[a, c]
+         ```
+
+       * `boolean remove(Object o)`：移除此列表中首次出现的指定元素（如果存在）。如果列表中包含该元素，则返回`true`；否则返回`false`。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.add("a");
+         boolean isRemoved = list.remove("a");
+         System.out.println(isRemoved); // 输出：true
+         System.out.println(list); // 输出：[b, a]
+         ```
+
+     * **修改元素**
+       * `E set(int index, E element)`：用指定的元素替换此列表中指定位置的元素，并返回被替换的元素。如果索引超出范围，会抛出`IndexOutOfBoundsException`异常。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         String oldElement = list.set(0, "c");
+         System.out.println(oldElement); // 输出：a
+         System.out.println(list); // 输出：[c, b]
+         ```
+
+     * **获取元素**
+       * `E get(int index)`：返回此列表中指定位置的元素。如果索引超出范围，会抛出`IndexOutOfBoundsException`异常。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         String element = list.get(1);
+         System.out.println(element); // 输出：b
+         ```
+
+     * **查找元素**
+       * `int indexOf(Object o)`：返回此列表中首次出现的指定元素的索引，如果此列表不包含该元素，则返回 -1。从列表的开头（索引 0）开始向后搜索。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.add("a");
+         int index = list.indexOf("a");
+         System.out.println(index); // 输出：0
+         ```
+
+       * `int lastIndexOf(Object o)`：返回此列表中最后出现的指定元素的索引，如果此列表不包含该元素，则返回 -1。从列表的结尾向后搜索。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.add("a");
+         int index = list.lastIndexOf("a");
+         System.out.println(index); // 输出：2
+         ```
+
+     * **列表操作**
+       * `void clear()`：移除此列表中的所有元素。操作完成后，列表将为空。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.clear();
+         System.out.println(list.isEmpty()); // 输出：true
+         ```
+
+       * `boolean isEmpty()`：如果此列表中没有元素，则返回`true`，否则返回`false`。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         System.out.println(list.isEmpty()); // 输出：true
+         list.add("a");
+         System.out.println(list.isEmpty()); // 输出：false
+         ```
+
+       * `int size()`：返回此列表中的元素个数。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         System.out.println(list.size()); // 输出：2
+         ```
+
+       * `boolean contains(Object o)`：如果此列表中包含指定的元素，则返回`true`，否则返回`false`。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         System.out.println(list.contains("a")); // 输出：true
+         System.out.println(list.contains("c")); // 输出：false
+         ```
+
+       * `Object clone()`：返回此`ArrayList`实例的浅表复制。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         ArrayList<String> cloneList = (ArrayList<String>) list.clone();
+         System.out.println(cloneList); // 输出：[a, b]
+         ```
+
+       * `List<E> subList(int fromIndex, int toIndex)`：返回此列表从`fromIndex`（包含）到`toIndex`（不包含）的子列表视图。如果`fromIndex`大于等于`toIndex`，或者`fromIndex`或`toIndex`超出范围，会抛出`IllegalArgumentException`或`IndexOutOfBoundsException`异常。
+       * 示例代码：
+
+         ```java
+         ArrayList<String> list = new ArrayList<>();
+         list.add("a");
+         list.add("b");
+         list.add("c");
+         list.add("d");
+         List<String> sub = list.subList(1, 3);
+         System.out.println(sub); // 输出：[b, c]
+         ```
+
+  4. **实现原理**
+     * **动态数组实现**
+       * `ArrayList` 底层是基于数组实现的。当添加元素时，如果当前数组的容量不足以存储新元素，它会自动扩容。扩容时，通常会将数组的大小增加到原来的 1.5 倍左右（这个倍数可能会因不同的 Java 版本而略有不同）。例如，初始容量为 10，当添加第 11 个元素时，数组会扩容为 15。
+       * 这种扩容机制保证了`ArrayList`在大多数情况下能够高效地存储元素，而在元素数量增长较快时，也能通过扩容来适应存储需求。不过，扩容操作本身会带来一定的性能开销，因为需要创建新的数组并复制原有元素。
+
+     * **线程安全**
+       * `ArrayList`不是线程安全的。多个线程同时对`ArrayList`进行读写操作可能会导致数据不一致、异常等问题。如果需要在多线程环境下使用类似功能的集合，可以考虑使用`Vector`（它是线程安全的，但性能相对较低）或者通过`Collections.synchronizedList()`方法来包装`ArrayList`以实现线程安全。
+
+     * **随机访问效率高**
+       * 由于底层是数组结构，`ArrayList`的随机访问（通过索引获取元素）非常高效，时间复杂度为 O(1)。因为可以直接通过索引计算出元素在内存中的位置，而不需要像链表那样从头开始遍历。
+
+     * **插入和删除效率低**
+       * 在中间位置插入或者删除元素时，由于需要移动后续元素，时间复杂度为 O(n)。例如，在一个有 1000 个元素的`ArrayList`中，要在索引 0 处插入一个元素，后面的 999 个元素都需要向后移动一个位置，这会耗费较多时间。
+
+#### LinkedList集合
+
+`LinkedList` 是 Java 中的另一种常用集合类，它也实现了`List`接口，并且还实现了`Deque`（双端队列）接口。与`ArrayList`不同，`LinkedList`基于链表数据结构实现。以下是`LinkedList`的构造方法、常用方法以及实现原理的详细说明：
+
+##### 构造方法
+
+1. **无参构造方法**
+   - `LinkedList()`：构造一个空的`LinkedList`。
+   - 示例：
+     ```java
+     LinkedList<String> list = new LinkedList<>();
+     ```
+
+2. **从集合构造**
+   - `LinkedList(Collection<? extends E> c)`：构造一个包含指定集合元素的`LinkedList`，这些元素的顺序由集合的迭代器返回。
+   - 示例：
+     ```java
+     ArrayList<String> arrayList = new ArrayList<>();
+     arrayList.add("a");
+     arrayList.add("b");
+     LinkedList<String> linkedList = new LinkedList<>(arrayList);
+     ```
+
+##### 常用方法
+
+1. **添加元素**
+   - `boolean add(E e)`：将指定的元素添加到此列表的尾部。
+   - `void add(int index, E element)`：将指定的元素插入此列表中的指定位置。
+   - `boolean addFirst(E e)`：将指定的元素插入此列表的开头。
+   - `boolean addLast(E e)`：将指定的元素插入此列表的尾部（等同于`add(E e)`）。
+
+2. **删除元素**
+   - `E remove(int index)`：移除此列表中指定位置的元素，并返回被移除的元素。
+   - `E removeFirst()`：移除此列表的第一个元素，并返回该元素。
+   - `E removeLast()`：移除此列表的最后一个元素，并返回该元素。
+   - `boolean remove(Object o)`：移除此列表中首次出现的指定元素（如果存在）。
+
+3. **修改元素**
+   - `E set(int index, E element)`：用指定的元素替换此列表中指定位置的元素。
+
+4. **获取元素**
+   - `E get(int index)`：返回此列表中指定位置的元素。
+   - `E getFirst()`：返回此列表的第一个元素。
+   - `E getLast()`：返回此列表的最后一个元素。
+
+5. **查找元素**
+   - `int indexOf(Object o)`：返回此列表中首次出现的指定元素的索引。
+   - `int lastIndexOf(Object o)`：返回此列表中最后出现的指定元素的索引。
+
+6. **列表操作**
+   - `void clear()`：移除此列表中的所有元素。
+   - `boolean isEmpty()`：如果此列表中没有元素，则返回`true`。
+   - `int size()`：返回此列表中的元素个数。
+   - `boolean contains(Object o)`：如果此列表中包含指定的元素，则返回`true`。
+   - `List<E> subList(int fromIndex, int toIndex)`：返回此列表从`fromIndex`（包含）到`toIndex`（不包含）的子列表视图。
+
+##### 实现原理
+
+1. **链表结构**
+   - `LinkedList`基于双向链表实现，每个元素都有一个前驱和后继节点，这使得在链表中间插入和删除元素非常高效，时间复杂度为O(1)，因为不需要移动其他元素。
+   - `LinkedList`没有固定大小，可以根据需要动态增长和缩减。
+
+2. **线程安全**
+   - 和`ArrayList`一样，`LinkedList`也不是线程安全的。在多线程环境下需要额外的同步措施。
+
+3. **随机访问效率**
+   - 由于基于链表，`LinkedList`的随机访问效率较低，时间复杂度为O(n)，需要从头或尾遍历到指定位置。
+
+4. **插入和删除效率**
+   - 在链表头尾插入和删除元素的时间复杂度为O(1)，在中间插入和删除的时间复杂度为O(n)，因为需要找到指定位置。
+
+总体来说，`LinkedList`适用于需要频繁在列表中间插入和删除元素的场景，而在需要频繁随机访问元素的场景下，`ArrayList`可能更为高效。
+
+### 增强for与底层实现
+
+1. 作用：遍历集合或者数组
+2. 格式：for(集合/数组的数据类型 变量名 : 集合名/数组名)
+
+注意：增强for遍历集合，底层实现为迭代器，遍历数组时，底层实现为普通for
+
+## 模块十九 - 集合补充
