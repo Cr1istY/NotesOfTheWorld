@@ -1507,3 +1507,290 @@ if (modCount != expectedModCount) {
 注意：增强for遍历集合，底层实现为迭代器，遍历数组时，底层实现为普通for
 
 ## 模块十九 - 集合补充
+
+### Collections工具类
+
+1. 集合工具类
+2. 特点：
+   1. 构造私有
+   2. 静态方法
+3. 使用：类名直接调用
+
+- `static void sort(List<T> list)`：对list集合进行排序，默认升序
+- `static void sort(List<T> list, Comparator<? super T> c)`：对list集合进行排序，自定义比较器
+- `static void shuffle(List<?> list)`：打乱集合
+- `static <T> boolean addAll(Collection<T> c, T... elements)`：将可变参数添加到集合中
+
+#### Comparable接口
+
+方法：`int compareTo(T o) -> this-o(升序) o-this(降序)`
+
+### 泛型
+
+作用：统一数据类型，防止将来的数据装换异常
+
+泛型中的类型必须是引用类型，不写默认为Object
+
+为什么要使用泛型：规定数据类型，防止出现数据转换异常
+
+定义层面：所有集合在定义的时候均使用泛型，增强灵活性
+
+#### 如何定义泛型
+
+##### 泛型类
+
+```java
+public class GenericClass<T> {
+
+}
+```
+
+含有泛型的类，在new对象的时候才确定类型
+
+```java
+public class Box<T> {
+   
+  private T t;
+ 
+  public void add(T t) {
+    this.t = t;
+  }
+ 
+  public T get() {
+    return t;
+  }
+ 
+  public static void main(String[] args) {
+    Box<Integer> integerBox = new Box<Integer>();
+    Box<String> stringBox = new Box<String>();
+ 
+    integerBox.add(new Integer(10));
+    stringBox.add(new String("菜鸟教程"));
+ 
+    System.out.printf("整型值为 :%d\n\n", integerBox.get());
+    System.out.printf("字符串为 :%s\n", stringBox.get());
+  }
+}
+```
+
+##### 泛型方法
+
+格式：`修饰符 <T> 返回值类型 方法名(T[] arr)`
+
+```java
+public class GenericMethodTest
+{
+   // 泛型方法 printArray                         
+   public static < E > void printArray( E[] inputArray )
+   {
+      // 输出数组元素            
+         for ( E element : inputArray ){        
+            System.out.printf( "%s ", element );
+         }
+         System.out.println();
+    }
+ 
+    public static void main( String args[] )
+    {
+        // 创建不同类型数组： Integer, Double 和 Character
+        Integer[] intArray = { 1, 2, 3, 4, 5 };
+        Double[] doubleArray = { 1.1, 2.2, 3.3, 4.4 };
+        Character[] charArray = { 'H', 'E', 'L', 'L', 'O' };
+ 
+        System.out.println( "整型数组元素为:" );
+        printArray( intArray  ); // 传递一个整型数组
+ 
+        System.out.println( "\n双精度型数组元素为:" );
+        printArray( doubleArray ); // 传递一个双精度型数组
+ 
+        System.out.println( "\n字符型数组元素为:" );
+        printArray( charArray ); // 传递一个字符型数组
+    } 
+}
+```
+
+##### 泛型通配符
+
+泛型通配符 `?` 表示未知类型，它允许你使用任意类型作为参数类型，并且可以接受任何类型作为返回值。
+
+```java
+import java.util.*;
+ 
+public class GenericTest {
+     
+    public static void main(String[] args) {
+        List<String> name = new ArrayList<String>();
+        List<Integer> age = new ArrayList<Integer>();
+        List<Number> number = new ArrayList<Number>();
+        
+        name.add("icon");
+        age.add(18);
+        number.add(314);
+ 
+        getData(name);
+        getData(age);
+        getData(number);
+       
+   }
+ 
+   public static void getData(List<?> data) {
+      System.out.println("data :" + data.get(0));
+   }
+}
+```
+
+泛型的上限和下限：
+
+1. 泛型的上限：`<? extends T>` 表示上限，表示只能接受T或者T的子类作为参数类型。
+2. 泛型的下限：`<? super T>` 表示下限，表示只能接受T或者T的父类作为参数类型。
+
+使用场景：
+
+1. 在定义类、方法、接口的时候，如果类型不确定，我们可以考虑带泛型的类、方法、接口
+2. 如果类型不确定，但是知道以后只能传递某个类的继承体系的子类或父类，我们可以考虑使用泛型
+
+### 斗地主案例
+
+使用集合方式实现：
+
+```java
+package cn.foreveryang.playcards;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Poker {
+    public static void main(String[] args) {
+        ArrayList<String> poker = getPoker();
+
+        Collections.shuffle(poker);
+        ArrayList<String> p1 = new ArrayList<>();
+        ArrayList<String> p2 = new ArrayList<>();
+        ArrayList<String> p3 = new ArrayList<>();
+        ArrayList<String> base = new ArrayList<>();
+        for (int i = 0; i < poker.size(); i++) {
+            String s = poker.get(i);
+            if (i >= 51) {
+                base.add(s);
+            } else if (i % 3 == 0) {
+                p1.add(s);
+            } else if (i % 3 == 1) {
+                p2.add(s);
+            } else {
+                p3.add(s);
+            }
+        }
+
+        System.out.println("3: " + p1);
+        System.out.println("2: " + p2);
+        System.out.println("1: " + p3);
+        System.out.println("base: " + base);
+
+    }
+
+    private static ArrayList<String> getPoker() {
+        ArrayList<String> color = new ArrayList<>();
+        ArrayList<String> number = new ArrayList<>();
+        ArrayList<String> poker = new ArrayList<>();
+        color.add("♠");
+        color.add("♥");
+        color.add("♣");
+        color.add("♦");
+
+        for (int i = 2; i <= 10; i++) {
+            number.add(i + "");
+        }
+
+        number.add("J");
+        number.add("Q");
+        number.add("K");
+        number.add("A");
+
+        for (String num : number) {
+            for (String huase : color) {
+                String pokerNum = num + huase;
+                poker.add(pokerNum);
+            }
+        }
+
+        poker.add("大王😀");
+        poker.add("小王");
+        return poker;
+    }
+}
+```
+
+### 各种树简要
+
+#### 二叉树
+
+#### 平衡树
+
+#### 非平衡树
+
+#### 排序树、查找树
+
+#### 红黑树
+
+集合加入红黑树的目的：增加查询效率
+
+jdk8之前：哈希表 = 数组 + 链表
+
+jdk8k8之后：哈希表 = 数组 + 链表 + 红黑树
+
+### Set集合
+
+Set接口，并没有对Collection接口进行扩展
+
+方法实现都依靠map实现
+
+Set和map是密切相关的
+
+Map的遍历需要先变成单列集合，转换为Set集合
+
+#### HashSet集合的介绍与使用
+
+1. 概述：HashSet是Set接口的实现类，底层是哈希表结构，查询效率比数组高
+2. 特点：
+   1. 元素唯一
+   2. 元素无序
+   3. 无索引
+   4. 线程不安全
+3. 数据结构：哈希表结构
+4. 方法：和Collection接口一样，但是HashSet集合没有removeAll()方法
+5. 遍历：
+   1. 使用增强for
+   2. 使用迭代器
+
+#### LinkedHashSet集合介绍与使用
+
+1. 概述：LinkedHashSet集合是HashSet集合的子类，底层是哈希表结构，查询效率比数组高，并且元素是有序的
+2. 特点：
+   1. 元素唯一
+   2. 元素有序
+   3. 无索引
+   4. 线程不安全
+3. 数据结构是哈希表+双向链表
+4. 使用：和HashSet集合一样
+
+### 哈希值
+
+1. 概述：哈希值是由计算机运算出来的十进制数，可以用来表示对象的地址，但是不能用来表示对象的内存地址
+2. 获取哈希值：使用Object中的`hashCode()`方法
+
+如果重写了HashCode方法，那么计算的就是对象内容的哈希值
+
+1. 哈希值不一样，内容肯定不一样
+2. 哈希值一样，内容不一定一样
+
+### HashSet去重复过程说明
+
+1. 先计算元素的哈希值（需要重写hashCode方法）
+2. 再比较元素的内容（需要重写equals方法）
+3. 先比较哈希值，如果哈希值一样，再比较内容
+   1. 哈希值一样，内容不一样 - 仍然保存
+   2. 哈希值一样，内容一样 - 去重复
+
+## 模块十九 - 集合补充II
+
+### Map集合
