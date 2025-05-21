@@ -1794,3 +1794,171 @@ Map的遍历需要先变成单列集合，转换为Set集合
 ## 模块十九 - 集合补充II
 
 ### Map集合
+
+Map是双列集合的顶级接口
+
+1. HashMap：
+   1. key唯一，value可重复
+   2. 无序
+   3. 无索引
+   4. 线程不安全
+   5. 可以存null键和null值
+   6. 数据结构：哈希表
+   7. 子类：LinkedHashMap
+      1. 是有序的
+      2. 数据结构：哈希表+双向链表
+2. HashTable：
+   1. 线程安全
+   2. 不可以存null键和null值
+   3. 子类：Properties
+      1. 主要和配置文件结合使用（IO流）
+      2. key唯一，value可重复
+      3. 无序
+      4. 无索引
+      5. 线程安全
+      6. 不能null键和null值
+      7. key和value都是字符串（String）类型
+3. TreeMap：
+   1. key唯一，value可重复
+   2. 可以对key进行排序
+   3. 无索引
+   4. 线程不安全
+   5. 不能存null键和null值
+   6. 数据结构：红黑树
+
+#### Map介绍
+
+1. 概述：Map接口是双列集合的顶级接口，双列集合中存储的是键值对
+2. 元素特点：
+   1. 元素都是由键值对组成的
+
+#### HashMap的介绍和使用
+
+1. 概述：HashMap是Map接口的实现类，底层是哈希表结构，查询效率比数组高
+2. 特点：
+   1. key唯一，value可重复
+3. 方法：
+   1. V put(K key, V value) - 添加元素，返回被覆盖的value
+   2. V remove(Object key) - 根据key删除元素，返回被删除的value
+   3. V get(Object key) - 根据key查询value
+   4. boolean containsKey(Object key) - 判断集合中是否存在指定的key
+   5. `Collection<V> values()` - 获取集合中的所有value，转存到Collection集合中
+
+#### LinkedHashMap介绍和使用
+
+1. 概述：LinkedHashMap是HashMap的子类，底层是哈希表加上双向链表结构，查询效率比数组高，并且元素是有序的
+
+遍历：
+
+1. Map都需要转成Set集合，再按照key值使用get(key)方法进行遍历
+2. 第二种遍历方式：
+   1. 获取记录key和value的Entry对象
+   2. 调用Entry对象的getKey()和getValue()方法
+
+Map存储自定义对象时如何去重复：
+
+重写equals方法，重写hashCode方法，确保key的唯一性
+
+#### Map集合的练习
+
+### 哈希表结构存储过程
+
+1. 哈希表存储数据去重复的过程：
+   1. 先比较元素的哈希值，再比较元素的内容
+   2. 哈希值不一样，直接存储
+   3. 哈希值一样，再比较内容
+      1. 内容一样，丢弃
+      2. 内容不一样，存储（使用链表或红黑树）
+
+细节：
+
+1. 哈希表中的数组，**默认长度为16**，但是是在第一次put的时候数组才会被初始化为16个字节
+2. 哈希表中，有一个加载因子，默认为**0.75F** - 含义是，数组存储达到75%的时候，数组扩容
+3. 扩容2倍
+4. 如果链表长度**达到8**，数组容量**大于等于64**的时候，自动转化为红黑树
+5. 如果删除元素，元素个数**小于等于6**，红黑树会转回为链表
+
+#### 哈希表源码
+
+#### 哈希表无索引与有序无序
+
+哈希表中虽然有数组，但是set和map却没有索引？
+
+这是因为哈希表在存储过程中，有可能形成链表，此时，一个索引就对应了多个元素，无法找出具体对应的元素
+
+为什么LinkedHashMap是有序的？
+
+LinkedHashMap底层是哈希表+双向链表，所以可以保证元素的顺序
+
+### 红黑树相关集合
+
+#### TreeSet
+
+Set的实现类
+
+1. 可以对元素进行排序
+2. 无索引
+3. 不能存null
+4. 线程不安全
+5. 元素唯一
+6. 数据结构：红黑树
+
+#### TreeMap
+
+Map的实现类
+
+1. 可以对Key进行排序
+2. 无索引
+3. key唯一
+4. 线程不安全
+5. 不能存null
+6. 数据结构：红黑树
+
+### Hashtable和Vector集合
+
+#### Hashtable
+
+Map的实现类
+
+1. key唯一
+2. value可重复
+3. 无序
+4. 无索引
+5. 线程安全
+6. 不能存null键和null值
+
+#### Vector
+
+1. 元素有序
+2. 有索引
+3. 元素可重复
+4. 线程安全
+5. 数据结构：数组
+
+### Properties属性集
+
+继承自Hashtable
+
+1. key唯一
+2. value可重复
+3. 无序
+4. 无索引
+5. 线程安全，不能存null键和null值
+6. 不需要指明泛型
+7. 数据结构：哈希表结构
+
+特有方法：
+
+`object setProperty(String key,String value)` - 存键值对
+
+`String getProperty(String key)` - 根据key获取value
+
+`Set<String> stringPropertyNames()` -  获取所有的key，保存到Set集合中
+
+`void load(InputStream inStream)` - 从流中读取键值对，存入Properties对象中
+
+### 集合嵌套
+
+和数组嵌套类似。
+
+## 模块二十 - IO流
