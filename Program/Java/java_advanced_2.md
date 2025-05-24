@@ -571,3 +571,266 @@ jar包：本身是一个压缩包，里面存放着开发好的类文件。
 ### 快速记忆IO流对象
 
 ## 模块二十三 - 网络编程、正则表达式、设计模式
+
+概述：在网络通信协议下，不同计算机上运行的程序，进行数据传输
+
+### 软件结构
+
+- C/S架构：客户端/服务端，常见：QQ
+- B/S架构：浏览器/服务器，常见：百度
+
+两种架构各有优缺，但是都离不开网络编程的支持。
+
+### 服务器
+
+服务器：安装了服务器软件的计算机，用于处理网络请求，返回响应。
+
+常见的服务器软件：tomcat
+
+两台计算机之间要想进行通讯，必须使用相应的规则
+
+### 通信三要素
+
+Ip地址、协议、端口号
+
+> 详见计算机网络
+
+### UDP协议编程
+
+1. DatagramSocket对象，指定端口，创建发送端
+2. DatagramPacket对象，封装数据，指定端口和ip地址
+
+#### 发送端
+
+1. 创建DatagramSocket对象（快递公司）
+   1. 空参：端口号从可用的端口号中随机一个使用
+   2. 有参：自己制定端口
+2. 创建DatagramPacket对象（快递单），打包数据
+   1. 要发送的数据 - 字节数组
+   2. 指定接收端的ip
+   3. 指定接收端的端口号
+3. 发送数据
+4. 释放资源
+
+#### 服务端
+
+1. 创建DatagramSocket对象，指定服务端的端口号
+2. 接收数据包
+3. 解析数据包
+4. 释放资源
+
+### TCP协议编程
+
+面向连接，必须要先打开服务端
+
+#### TCP客户端
+
+Socket对象，指定ip和端口，创建客户端
+
+1. 创建Socket对象，指定服务端ip和端口
+2. 调用Socket对象中的getOutputStream()方法，获取网络输出流，发送请求
+3. 调用Socket中的getInputStream()方法，获取网络输入流，读取响应数据
+4. 关流
+
+#### TCP服务端
+
+1. 创建ServerSocket对象，指定端口
+2. 调用ServerSocket对象的accept()方法，等待客户端连接，该方法返回的是连接服务端的socket对象
+3. 调用Socket对象中的getInputStream()方法，获取网络输入流，读取数据
+4. 调用Socket对象中的getOutputStream()方法，用于给客户端写响应
+5. 关流
+
+#### 文件上传练习
+
+```java
+package cn.foreveryang.tcp;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
+
+public class Client {
+    public static void main(String[] args) throws Exception {
+        // 1. 创建Socket对象
+        Socket socket = new Socket("127.0.0.1", 6666);
+        // 2. 创建FileInputStream用于读取本地文件
+        FileInputStream fis = new FileInputStream("E:\\ceshi\\ceshi.png");
+        // 3. 调用getOutputStream，用于将读取过来的图片写给服务端
+        OutputStream os = socket.getOutputStream();
+        // 4. 边读边写
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = fis.read(buf)) != -1) {
+            os.write(buf, 0, len);
+        }
+
+        System.out.println("==========");
+        socket.shutdownOutput();
+        // 5. 调用getInputStream，读取响应结果
+        InputStream is = socket.getInputStream();
+        byte[] buf1 = new byte[1024];
+        int len1 = is.read(buf1);
+        System.out.println(new String(buf1, 0, len1));
+        is.close();
+        os.close();
+        socket.close();
+        fis.close();
+    }
+}
+```
+
+```java
+package cn.foreveryang.tcp;
+
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.InputStream;
+
+
+public class Server {
+    public static void main(String[] args) throws Exception {
+        // 1. 创建ServerSocket对象
+        ServerSocket ss = new ServerSocket(6666);
+        // 2. 调用accept方法，等待客户端连接
+        Socket s = ss.accept();
+        // 3. 调用socket中的getInputSteam，读取客户端的发送过来的图片
+        InputStream is = s.getInputStream();
+        // 4. 创建FileOutputSteam，将读取过来的图片写在硬盘上
+        FileOutputStream fos = new FileOutputStream("E:\\test1.png");
+        // 5. 边读边写
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = is.read(buffer)) != -1) {
+            fos.write(buffer, 0, len);
+        }
+
+        System.out.println("=====");
+
+        // 6. 调用socket中的getOutputSteam，给客户端响应结果
+
+        OutputStream os = s.getOutputStream();
+        os.write("上传成功".getBytes());
+
+        // 7，关流
+
+        os.close();
+        fos.close();
+        is.close();
+        s.close();
+        ss.close();
+
+
+    }
+}
+```
+
+### 正则表达式
+
+正则表达式是一个具有特殊规则的字符串，用于匹配字符串。
+
+使用：用于检验手机号、邮箱、身份证号、邮政编码、IP地址、URL地址、日期、时间、金额等。
+
+#### 正则表达式具体使用
+
+##### 正则表达式字符类
+
+### 设计模式
+
+设计模式，是一套被反复使用，经过分类编目的代码设计经验的总结。
+
+使用正则表达式，是为了可重用代码，保证代码的可靠性、程序的重用性、稳定性。
+
+#### 模板方法设计模式
+
+模板方法设计模式：定义一个操作中的算法的骨架，而将一些步骤延迟到子类中。明确了一部分功能，而另一部分功能不明确，需要延迟到子类中实现。
+
+例如：饭店吃饭，需要经过点菜、吃菜、买单三个步骤，其中，点菜和买单是固定步骤，吃菜是变化的步骤，所以，点菜和买单是模板方法，而吃菜是变化的步骤，所以，吃菜是子类实现。
+
+#### 单例模式
+
+1. 目的：单-一个，例-实例
+2. 让一个类只产生一个对象，给外界使用。
+
+分类：
+
+1. 饿汉式：我好饥饿呀，迫不及待要这个对象，感觉new出来
+2. 懒汉式：我懒，等我需要时才去创建对象
+
+##### 饿汉式
+
+```java
+public class GiantDragon {
+
+    //私有化构造方法使得该类无法在外部通过new 进行实例化
+    private GiantDragon(){
+        System.out.println("私有化构造方法");
+    }
+
+    //准备一个类属性，指向一个实例化对象。 因为是类属性，所以只有一个
+
+    private static GiantDragon instance = new GiantDragon();
+
+    //public static 方法，提供给调用者获取12行定义的对象
+    public static GiantDragon getInstance(){
+        return instance;
+    }
+}
+```
+
+##### 懒汉式
+
+```java
+public class GiantDragon2 {
+
+    //GiantDragon2 进行实例化
+    private GiantDragon2(){
+        System.out.println("私有化构造方法");
+    }
+
+    //准备一个类属性，用于指向一个实例化对象，但是暂时指向null
+    private static GiantDragon2 instance;
+
+    //public static 方法，返回实例对象 （非线程安全的，不推荐使用该写法）
+    public static GiantDragon2 getInstance(){
+        //第一次访问的时候，发现instance没有指向任何对象，这时实例化一个对象
+        if(null==instance){
+            instance = new GiantDragon2();
+        }
+        //返回 instance指向的对象
+        return instance;
+    }
+    // 线程安全的，并且通过非空判断提升性能（因为如果只上锁，那么每次调用的时候都会上锁，事实上只有第一次创建对象的时候才需要加锁）
+    public static GiantDragon2 getInstance(){
+        if(instance == null){
+            synchronized(instance){
+                //第一次访问的时候，发现instance没有指向任何对象，这时实例化一个对象
+                if(null==instance){
+                    instance = new GiantDragon2();
+                }
+            }
+        }
+        //返回 instance指向的对象
+        return instance;
+    }
+    //以上线程安全的写法在java单例设计模式中并非完美的写法，因为在JVM执行过程中可能会存在问题，感兴趣的小伙伴可以去找一下相关的资料。
+
+}
+```
+
+### Lombok的使用
+
+简化javabean开发
+
+之前：
+
+1. 提供属性
+2. 提供构造方法
+
+如果使用lombok：只需要提供属性
+
+## 模块二十四 - JDK新特性
+
+### Lambda表达式
