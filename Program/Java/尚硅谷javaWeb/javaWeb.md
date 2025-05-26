@@ -399,3 +399,59 @@
 #### XML
 
 Extensible Markup Language 可扩展的标记语言
+
+用于配置文件
+
+- 可拓展：XML允许自定义标签，但不代表你可以随便写
+
+```xml
+
+```
+
+1. 只有一个根标签
+2. 第一行写法固定
+3. xml有约束，用于限定xml内部能编写的内容
+
+##### DOM4J进行XML解析
+
+### Tomcat
+
+TomCat是一个开源的Java Web服务器
+
+#### TomCat目录
+
+1. bin - tomcat相关命令
+2. conf - tomcat配置文件
+3. lib - tomcat依赖包
+4. logs - tomcat日志文件
+5. temp - tomcat临时文件
+6. work - tomcat工作目录，jsp技术有关
+7. webapps - tomcat部署的web项目
+
+#### Web项目结构
+
+- app
+   - index.html
+   - static
+     - css
+     - js
+     - img
+
+#### Tomcat部署项目的方式
+
+1. 直接扔到webapps目录中
+2. 添加配置文件
+
+#### IDE 关联 Tomcat
+
+Tomcat挂载的是用java写好的app
+
+我们需要使用idea来实现工程的建设和打包
+
+1. 建立tomcat和idea的联系
+2. 创建使用idea，javaWeb项目
+3. 在Web工程中开发代码
+4. 使用idea将工程构建成app
+5. 使用idea将app部署到tomcat中
+
+##### IDEA 与 tomcat 底层原理
