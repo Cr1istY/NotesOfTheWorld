@@ -455,3 +455,73 @@ Tomcat挂载的是用java写好的app
 5. 使用idea将app部署到tomcat中
 
 ##### IDEA 与 tomcat 底层原理
+
+IDEA在底层，创建了一个tomcat的虚拟副本
+
+存放的仅仅是和app相关的配置文件
+
+### HTTP
+
+Tomcat默认使用HTTP协议1.1
+
+1. 交互的模式：请求（客户端向服务端）-响应（服务端向客户端）模式
+2. 数据的格式：请求时发送的数据，被称为请求报文，响应则称为响应报文
+
+#### HTTP请求和响应报文格式
+
+##### 报文的格式
+
+报文 = 报文行 + 报文头 + 报文体
+
+#### 常见响应状态码
+
+- 200 - 请求成功
+- 302 - 重定向
+- 304 - 使用本地缓存
+- 404 - 资源不存在
+- 405 - 资源被拒绝访问
+- 500 - 服务器异常
+
+### Servlet
+
+#### 动态资源与静态资源
+
+- 静态资源：图片，css，js，html，txt，ico
+- 动态资源：需要在程序运行时通过代码运行生成的资源
+
+#### 什么是Servlet
+
+Servlet是运行在服务端上的java小程序，是sum公司提供的一套定义动态资源规范，从代码层面上来讲Servlet就是一个接口
+
+tomcat接收到请求后，会将请求的报文信息转换为一个HttpServletRequest对象
+
+该对象中包含了请求中的所有信息，及请求行、请求头、请求体
+
+同时，tomcat会创建一个HttpServletResponse对象，用于装载要响应给客户端的信息
+
+该对象中包含了响应报文信息，及响应行、响应头、响应体
+
+我们需要自定义一个class 实现 Servlet 接口
+
+tomcat根据请求中的资源路径，找到对应的servlet，将servlet实例化，调用servlet方法，同时将HttpServletRequest和HttpServletResponse作为参数传递给servlet方法
+
+我们就可以在servlet方法中：
+
+1. 从request对象中获取所有信息，一般为参数
+2. 根据参数，生成获取要响应给客户端的数据
+3. 将响应的数据放入response对象中，并设置响应头，告诉客户端本次请求的响应类型和编码格式
+
+#### Servlet开发流程
+
+1. 创建Servlet类，继承HttpServlet抽象类
+2. 重写service(HttpServletRequest request, HttpServletResponse response)方法
+3. 在service方法中，定义业务处理代码
+4. 在web.xml中配置Servlet对应的请求映射路径
+   1. 配置Servlet类，并起一个别名
+
+#### Servlet开发中的常见问题
+
+1. Servlet-api.jar 导入问题
+2. Content-Type响应头问题
+
+#### Servlet_url-pattern的一些特殊写法
