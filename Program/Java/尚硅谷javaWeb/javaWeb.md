@@ -525,3 +525,151 @@ tomcat根据请求中的资源路径，找到对应的servlet，将servlet实例
 2. Content-Type响应头问题
 
 #### Servlet_url-pattern的一些特殊写法
+
+简单来说，我们需要在web.xml中配置Servlet对应的请求映射路径（路由配置）
+
+1. 精确匹配 /servlet1
+2. 通配符匹配
+   1. /* - 匹配全部，包括jsp文件
+   2. /servlet2/* - 匹配servlet2下的所有资源，包括jsp文件 - 匹配前缀，后缀模糊
+
+#### Servlet注解配置
+
+我们可以使用@WebServlet注解来配置Servlet，@WebServlet("")
+
+@WebServlet(urlPatterns = "/servlet1")
+
+#### Servlet生命周期
+
+1. 实例化 - 构造器 - 第一次请求 - 1
+2. 初始化 - init()方法 - 构造完毕 - 1
+3. 接受请求，处理请求服务 - service - 每一次请求 - 多次
+4. 销毁 - destory()方法 - 关闭服务 - 1
+
+Servlet在tomcat中是单例模式，那么我们就可以进行多线程的并发访问
+
+在Servlet中，**不要修改成员变量**
+
+注解属性：load-on-startup
+
+1. 默认值为 -1 ，表示tomcat启动时不会实例化servlet
+2. 值为正数，表示tomcat启动时实例化servlet，值越小越优先实例化
+3. 序号重复，tomcat自动进行处理
+
+#### Servlet继承结构
+
+继承HttpServlet后，要么重写service方法，要么重写 doGet/doPost 方法
+
+##### Servlet接口
+
+1. init(ServletConfig config)
+作用：初始化 Servlet。
+参数：ServletConfig 对象，包含了 Servlet 的初始化参数。
+描述：当 Servlet 被加载到容器中时，容器会调用该方法来初始化 Servlet。在这个方法中，可以进行一些资源的初始化操作，例如加载配置文件、初始化数据库连接池等。
+1. service(ServletRequest req, ServletResponse res)
+作用：处理客户端的请求。
+参数：ServletRequest 对象表示客户端的请求，ServletResponse 对象用于向客户端发送响应。
+描述：这是 Servlet 的核心方法，每当客户端发送一个请求时，容器会调用该方法来处理请求。根据请求的类型（如 GET 或 POST），Servlet 需要在该方法中实现具体的业务逻辑，并通过 ServletResponse 对象将响应发送给客户端。
+1. destroy()
+作用：销毁 Servlet。
+描述：当 Servlet 即将被容器卸载或容器即将关闭时，容器会调用该方法。在这个方法中，可以释放一些资源，例如关闭数据库连接、释放线程池等。
+1. getServletConfig()
+作用：获取 Servlet 的配置信息。
+返回值：ServletConfig 对象。
+描述：通过该方法可以获取到 Servlet 的配置信息，例如初始化参数等。
+1. getServletInfo()
+作用：获取 Servlet 的描述信息。
+返回值：一个字符串，描述 Servlet 的相关信息。
+描述：通常返回一些关于 Servlet 的描述性信息，例如作者、版本等。
+
+##### 抽象实现类GenericServlet
+
+GenericServlet 是 Java Servlet API 中的一个抽象类，它实现了 Servlet 接口和 ServletConfig 接口。GenericServlet 提供了一些通用的实现，简化了 Servlet 的开发过程。以下是 GenericServlet 的主要特点和方法：
+
+主要方法：
+以下是 GenericServlet 提供的主要方法及其简单介绍：
+
+- 2.1 init()
+作用：初始化 Servlet。
+描述：GenericServlet 提供了 init() 方法的默认实现，它会调用 init(ServletConfig config) 方法，并将 ServletConfig 对象保存起来。开发者可以通过重写 init() 方法来自定义初始化逻辑。
+- 2.2 service(ServletRequest req, ServletResponse res)
+作用：处理客户端的请求。
+描述：GenericServlet 的 service 方法是一个抽象方法，开发者必须重写该方法来实现具体的请求处理逻辑。service 方法会根据请求的类型（如 GET 或 POST）调用不同的处理方法。
+- 2.3 destroy()
+作用：销毁 Servlet。
+描述：GenericServlet 提供了 destroy() 方法的默认实现，开发者可以通过重写该方法来释放资源。
+- 2.4 getServletConfig()
+作用：获取 Servlet 的配置信息。
+返回值：ServletConfig 对象。
+描述：GenericServlet 提供了 getServletConfig() 方法的默认实现，返回保存的 ServletConfig 对象。
+- 2.5 getServletInfo()
+作用：获取 Servlet 的描述信息。
+返回值：一个字符串，描述 Servlet 的相关信息。
+描述：GenericServlet 提供了 getServletInfo() 方法的默认实现，返回一个空字符串。开发者可以通过重写该方法来提供自定义的描述信息。
+- 2.6 log(String msg)
+作用：记录日志信息。
+描述：GenericServlet 提供了 log() 方法，用于记录日志信息。该方法会将日志信息写入到容器的日志系统中。
+
+##### HttpServlet
+
+HttpServlet 是 Java Servlet API 中的一个抽象类，专门用于处理 HTTP 协议的请求。它继承自 GenericServlet，并提供了对 HTTP 协议的特定支持。HttpServlet 是开发基于 HTTP 的 Web 应用程序时最常用的类之一。
+
+以下是 HttpServlet 提供的主要方法及其简单介绍：
+
+- 2.1 service(HttpServletRequest req, HttpServletResponse res)
+作用：处理 HTTP 请求。
+描述：HttpServlet 的 service 方法是一个抽象方法，它会根据请求的 HTTP 方法类型（如 GET、POST 等）调用相应的处理方法（如 doGet、doPost 等）。开发者通常不需要重写 service 方法，而是重写具体的处理方法（如 doGet、doPost 等）。
+- 2.2 doGet(HttpServletRequest req, HttpServletResponse res)
+作用：处理 GET 请求。
+描述：当客户端发送一个 HTTP GET 请求时，service 方法会调用 doGet 方法。开发者需要重写该方法来实现具体的 GET 请求处理逻辑。
+- 2.3 doPost(HttpServletRequest req, HttpServletResponse res)
+作用：处理 POST 请求。
+描述：当客户端发送一个 HTTP POST 请求时，service 方法会调用 doPost 方法。开发者需要重写该方法来实现具体的 POST 请求处理逻辑。
+- 2.4 doPut(HttpServletRequest req, HttpServletResponse res)
+作用：处理 PUT 请求。
+描述：当客户端发送一个 HTTP PUT 请求时，service 方法会调用 doPut 方法。开发者需要重写该方法来实现具体的 PUT 请求处理逻辑。
+- 2.5 doDelete(HttpServletRequest req, HttpServletResponse res)
+作用：处理 DELETE 请求。
+描述：当客户端发送一个 HTTP DELETE 请求时，service 方法会调用 doDelete 方法。开发者需要重写该方法来实现具体的 DELETE 请求处理逻辑。
+- 2.6 doHead(HttpServletRequest req, HttpServletResponse res)
+作用：处理 HEAD 请求。
+描述：当客户端发送一个 HTTP HEAD 请求时，service 方法会调用 doHead 方法。开发者需要重写该方法来实现具体的 HEAD 请求处理逻辑。
+- 2.7 doOptions(HttpServletRequest req, HttpServletResponse res)
+作用：处理 OPTIONS 请求。
+描述：当客户端发送一个 HTTP OPTIONS 请求时，service 方法会调用 doOptions 方法。开发者需要重写该方法来实现具体的 OPTIONS 请求处理逻辑。
+- 2.8 doTrace(HttpServletRequest req, HttpServletResponse res)
+作用：处理 TRACE 请求。
+描述：当客户端发送一个 HTTP TRACE 请求时，service 方法会调用 doTrace 方法。开发者需要重写该方法来实现具体的 TRACE 请求处理逻辑。
+
+#### ServletContext 和 ServletConfig
+
+##### ServletConfig
+
+为Servlet 提供配置信息的一种对象
+
+ServletConfig 会读取web.xml文件中的配置信息，然后以键值对的形式保存在ServletConfig对象中。
+
+1. hasMoreElements() - 判断是否有下一个元素
+2. nextElement() - 返回配置信息中的下一个键值对。
+
+每个Servlet 对象都有一个自己独立的 ServletConfig 对象，该对象包含了Servlet 的配置信息。
+
+##### ServletContext
+
+更加重要的对象，用于管理Servlet
+
+1. 为所有的Servlet提供全局的配置信息
+2. 容器会为每一个app都创建一个ServletContext对象
+
+##### ServletContext其他重要API
+
+我们希望存入文件
+
+1. 获取资源的真实路径：`String getRealPath(String path)`
+2. 获取项目的上下文路径（项目的访问名称）：`String getContextPath()`
+3. 域对象的相关API
+
+###### 域对象
+
+- 一些用于存储数据和传递数据的对象，传递数据不同的范围，我们称之为不同的域，不同的域对象代表不同的域，共享数据的范围也不同
+- webapp中有三大域对象：应用域，会话域，请求域

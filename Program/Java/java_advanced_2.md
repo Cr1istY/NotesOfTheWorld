@@ -994,6 +994,54 @@ idea就是使用反射的方法，反射出了对象的方法和属性。
 
 #### 反射获取构造方法
 
+万物皆对象
+
+Class类中用于获取构造方法的方法：
+
+- `Constructor<?>[] getConstructors()`
+- `Constructor<?>[] getDeclaredConstructors()`
+- `Constructor<T> getConstructor(Class<?>... parameterTypes)`
+- `Constructor<T> getDeclaredConstructor(Class<?>... parameterTypes)`
+
+Constructor类中用于创建对象的方法：
+
+- `T newInstance(Object... initargs)`
+- `setAccessible(boolean flag)`
+
+1. 获取class字节码文件对象
+2. 获取构造方法
+
+#### 反射获取成员变量
+
+- `Field[] getFields()`
+- `Field[] getDeclaredFields()`
+- `Field getField(String name)`
+- `Field getDeclaredField(String name)`
+
+Filed类中用于创建对象的方法：
+
+- `void set(Object obj, Object value)`
+- `Object get(Object obj)`
+
+#### 反射获取成员方法
+
+- `Method[] getMethods()`
+- `Method[] getDeclaredMethods()`
+- `Method getMethod(String name, Class<?>... parameterTypes)`
+- `Method getDeclaredMethod(String name, Class<?>... parameterTypes)`
+
+Method类中用于创建对象的方法：
+
+- `Object invoke(Object obj, Object... args)`
+
+参数一：用obj对象调用该方法
+
+参数二：调用方法的传递的参数
+
+返回值：方法的返回值
+
+没有就不写
+
 ### 注解
 
 作用：
