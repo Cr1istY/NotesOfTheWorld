@@ -809,4 +809,34 @@ Cookie是一种客户端会话技术，由服务端产生
 
 ### AJAX
 
+## 微头条
+
+### 技术栈介绍
+
+> 前端技术栈
+
++ ES6作为基础JS语法
++ nodejs用于运行环境
++ npm用于项目依赖管理工具
++ vite用于项目的构建架工具
++ Vue3用于项目数据的渲染框架
++ Axios用于前后端数据的交互
++ Router用于页面的跳转
++ Pinia用于存储用户的数据
++ LocalStorage作为用户校验token的存储手段
++ Element-Plus提供组件
+
+> 后端技术栈
+
++ JAVA作为开发语言,版本为JDK17
++ Tomcat作为服务容器,版本为10.1.7
++ Mysql8用于项目存储数据
++ Servlet用于控制层实现前后端数据交互
++ JDBC用于实现数据的CURD
++ Druid用于提供数据源的连接池
++ MD5用于用户密码的加密
++ Jwt用于token的生成和校验
++ Jackson用于转换JSON
++ Filter用于用户登录校验和跨域处理
++ Lombok用于处理实体类
 
